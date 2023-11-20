@@ -1,19 +1,20 @@
-const mongoose = require('mongoose');
 const config = require('../config/config.js');
+const { connectToDatabase } = require('../config/database.js');
 
-let Products
+let Products 
 switch (config.persistence) {
     case "MONGO":
-        const connection = mongoose.connect(MONGO_URL);
-        const { default: ProductsMongo } = await import('../config/config.js');
+        connectToDatabase;
+        const { default: ProductsMongo } = require('./mongo/models/products.model.js');
         Products = ProductsMongo;
         break;
     case "MEMORY":
-        const { default: ContactMemory } = await import("./memory/contact.memory.js");
-        Contact = ContactMemory;
-        break
+        const { default: ProductsMemory } = require("./memory/products.memory.js");
+        Products = ProductsMemory;
+        break;
 
     default:
 };
+
 
 module.exports = { Products };
