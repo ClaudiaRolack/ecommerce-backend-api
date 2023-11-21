@@ -4,12 +4,12 @@ const { connectToDatabase } = require('../config/database.js');
 let Products 
 switch (config.persistence) {
     case "MONGO":
-        connectToDatabase;
-        const { default: ProductsMongo } = require('./mongo/models/products.model.js');
+        connectToDatabase();
+        const { ProductsMongo } = require('./mongo/products.mongo.js');
         Products = ProductsMongo;
         break;
     case "MEMORY":
-        const { default: ProductsMemory } = require("./memory/products.memory.js");
+        const { ProductsMemory } = require("./memory/products.memory.js");
         Products = ProductsMemory;
         break;
 
