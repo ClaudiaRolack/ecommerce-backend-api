@@ -6,9 +6,8 @@ class ProductsRepository {
     };
 
     create = async (productData) => {
-        let productToInsert = new ProductsDTO(productData);
-        let result = await this.dao.create(productToInsert);
-        return result;
+        let product = await this.dao.create(productData);
+        return product;
     };
 
     get = async () => {
@@ -17,27 +16,17 @@ class ProductsRepository {
     };
 
     getById = async (id) => {
-        let pid = id
-        let productById = await this.dao.getById(pid);
-        if (!productById) {
-            return "El ID no existe";
-        } else {
-            return productById;
-        };
+        let productById = await this.dao.getById(id);
+        return productById;
     };
 
     update = async (id, productData) => {
         let pid = id;
-        let existingProduct = await this.dao.getById(pid);
-        if (!existingProduct) { return "Producto no encontrado"; }
-        let updatedProduct = Object.assign({}, existingProduct, productData);
-        await this.dao.update(pid, updatedProduct);
-        return "Producto actualizado";
+        let updatedProduct = await this.dao.update(pid, productData)
+        return updatedProduct;
     };
 
     delete = async (id) => {
-        let pid = id;
-        let product = await this.dao.getById(pid);
         if (product) await this.dao.delete(id);
         return "Producto Eliminado";
     };

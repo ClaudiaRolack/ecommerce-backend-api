@@ -2,8 +2,8 @@ const { productsModel } = require('./models/products.model.js');
 
 class ProductsMongo {
 
-    create = async (product) => {
-        const newProduct = await productsModel.create(product);
+    create = async (productData) => {
+        const newProduct = await productsModel.create(productData);
         return newProduct;
     }; 
 
@@ -22,10 +22,11 @@ class ProductsMongo {
         };
     };
 
-    update = async (id, product) => {
+    update = async (id, productData) => {
         let pid = id;
         let existingProduct = await productsModel.findById(pid);
-        existingProduct.set(product);
+        if (!existingProduct) { return "Producto no encontrado"; }
+        existingProduct.set(productData);
         await existingProduct.save();
         return "Producto actualizado";
     };
