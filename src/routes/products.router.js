@@ -16,17 +16,17 @@ router.post("/", async (req, res) => {
         console.error('Error al crear producto:', error);
         return res.status(500).json({ result: 'error', error: error.message });
     }
-});
+})
 
 router.get("/", async (req, res) => {
     let result = await productsService.get();
     res.send({ status: "success", payload: result });
-});
+})
 
 router.get("/:pid", async (req, res) => {
     let { pid } = req.params;
     res.send(await productsService.getById(pid));
-});
+})
 
 router.put("/:pid", async (req, res) => {
     let { pid } = req.params;
@@ -36,13 +36,13 @@ router.put("/:pid", async (req, res) => {
     } else {
         let result = await productsService.update({ _id: pid }, productsToReplace);
         res.send({ result: "success", payload: result });
-    };
-});
+    }
+})
 
 router.delete("/:pid", async (req, res) => {
     let { pid } = req.params;
     let result = await productsService.delete(pid);
     res.send({ result: "success", payload: result });
-});
+})
 
 module.exports = router

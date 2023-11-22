@@ -1,6 +1,9 @@
-const { Products } = require('../dao/factory.js');
+const { Products, Carts } = require('../dao/factory.js');
 const { ProductsRepository } = require('./products.repository.js');
+const { CartsRepository } = require('./carts.respository.js');
 
 const productsService = new ProductsRepository(new Products());
 
-module.exports = { productsService };
+const cartsService = new CartsRepository(new Carts());
+
+module.exports = { productsService, cartsService };

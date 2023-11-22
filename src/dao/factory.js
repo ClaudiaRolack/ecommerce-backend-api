@@ -14,7 +14,22 @@ switch (config.persistence) {
         break;
 
     default:
-};
+}
+
+let Carts
+switch (config.persistence) {
+    case "MONGO":
+        connectToDatabase();
+        const { CartsMongo } = require('./mongo/carts.mongo.js');
+        Carts = CartsMongo;
+        break;
+    case "MEMORY":
+        const { CartsMemory } = require("./memory/carts.memory.js");
+        Carts = CartsMemory;
+        break;
+
+    default:
+}
 
 
-module.exports = { Products };
+module.exports = { Products, Carts }

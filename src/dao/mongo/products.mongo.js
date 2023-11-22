@@ -5,12 +5,12 @@ class ProductsMongo {
     create = async (productData) => {
         const newProduct = await productsModel.create(productData);
         return newProduct;
-    }; 
+    }
 
     get = async () => {
         let products = await productsModel.find();
         return products;
-    };
+    }
 
     getById = async (id) => {
         let pid = id
@@ -19,8 +19,8 @@ class ProductsMongo {
             return "El ID no existe";
         } else {
             return productById;
-        };
-    };
+        }
+    }
 
     update = async (id, productData) => {
         let pid = id;
@@ -29,7 +29,7 @@ class ProductsMongo {
         existingProduct.set(productData);
         await existingProduct.save();
         return "Producto actualizado";
-    };
+    }
 
     delete = async (id) => {
         let pid = id;
@@ -39,9 +39,9 @@ class ProductsMongo {
             return "Producto eliminado";
           } else {
             return "Producto no encontrado";
-          };
-    };
+          }
+    }
 
-};
+}
 
-module.exports = { ProductsMongo };
+module.exports = { ProductsMongo }

@@ -1,15 +1,7 @@
-class CartItemDTO {
-    constructor(productId, quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+class CartsDTO {
+    constructor(carts = []) {
+        this.carts = carts;
     }
 }
 
-class CartDTO {
-    constructor(userId, items) {
-        this.userId = userId;
-        this.items = items || []; // Array de objetos CartItemDTO
-    }
-}
-
-module.exports = { CartItemDTO, CartDTO };
+module.exports = { CartsDTO }
