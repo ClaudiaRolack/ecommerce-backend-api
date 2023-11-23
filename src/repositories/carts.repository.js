@@ -1,5 +1,3 @@
-const { CartsDTO } = require('../dao/DTOs/carts.dto');
-
 class CartsRepository {
     constructor(dao) {
         this.dao = dao

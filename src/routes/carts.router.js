@@ -1,6 +1,5 @@
 const { Router } = require('express');
-const { CartsDTO } = require('../dao/DTOs/carts.dto.js');
-const { cartsService, productsService } = require('../repositories/index.js');
+const { cartsService } = require('../repositories/index.js');
 
 const router = Router();
 
