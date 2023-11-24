@@ -19,7 +19,7 @@ class UsersRepository {
     }
 
     validateUSer = async (param) => {
-        let user = await this.dao.validateUSer(param);
+        let user = await this.dao.validateUser(param);
         return user;
     }
 

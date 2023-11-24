@@ -47,7 +47,7 @@ const initializePassport = () => {
         done(null, user);
     });
 
-    passport.use("login", new localStrategy({ usernameField: "email" }, async (username, password, done) => {
+    passport.use(new localStrategy({ usernameField: "email" }, async (email, password, done) => {
 
         try {
             const user = await usersService.validateUSer(email)
