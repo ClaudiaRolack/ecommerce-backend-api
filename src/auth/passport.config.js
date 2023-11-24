@@ -2,22 +2,23 @@ const passport = require('passport');
 const local = require('passport-local');
 const jwt = require('passport-jwt');
 
-const { UsersMongo } = require('../dao/mongo/users.mongo.js')
+const { usersService} = require('../repositories/index.js');
+const { createHash, isValidPassword } = require('../helpers/Encrypt.js');
 
 const localStrategy = local.Strategy;
-const jwtStrategy = jwt.Strategy;
+const JwtStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
 
-    passport.use("/register", new localStrategy(
+    passport.use(new localStrategy(
 
         { passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
 
             const { firstName, lastName, email, age, rol } = req.body
 
             try {
-                let user = await  UsersMongo.findByEmail({ email: username })
+                let user = await  usersService.getUserByEmail(email)
                 if (user) {
                     console.log("El usuario ya existe")
                     return done(null, false)
@@ -27,7 +28,7 @@ const initializePassport = () => {
                     lastName,
                     email,
                     age,
-                    password,
+                    password: createHash(password),
                     rol
                 }
                 return done(null, newUser)
@@ -42,63 +43,60 @@ const initializePassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let user = await userModel.findById(id);
+        let user = await usersService.getUserById(id);
         done(null, user);
     });
 
-    // passport.use("login", new localStrategy({ usernameField: "email" }, async (username, password, done) => {
+    passport.use("login", new localStrategy({ usernameField: "email" }, async (username, password, done) => {
 
-    //     try {
-    //         const user = await userModel.findOne({ email: username })
-    //         if (!user) {
-    //             console.log("El usuario no existe")
-    //             return done(null, false)
-    //         }
-    //         if (!isValidPassword(user, password)) {
-    //             return done(null, false)
-    //         }
-    //         return done(null, user)
-    //     } catch (error) {
-    //         return done(error)
-    //     }
-    // }))
+        try {
+            const user = await usersService.validateUSer(email)
+            if (!user) {
+                console.log("El usuario no existe")
+                return done(null, false)
+            }
+            if (!isValidPassword(user, password)) {
+                return done(null, false)
+            }
+            return done(null, user)
+            
+        } catch (error) {
+            return done(error) 
+        }
+    }))
 
-    // const jwtOptions = {
-    //     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    //     secretOrKey: "Secret-key"
-    // }
 
-    // new JwtStrategy(jwtOptions, (jwt_payload, done) => {
-    //     const user = userModel.find((user) => user.email === jwt_payload.email)
+    const jwtOptions = {
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: "Secret-key"
+    }
 
-    //     if (!user) {
-    //         return done(null, false, { message: "Usuario no encontrado" })
-    //     }
+    new JwtStrategy(jwtOptions, (jwt_payload, done) => {
+        const user = usersService.getUserByEmail((user) => user.email === jwt_payload.email)
+        if (!user) { return done(null, false, { message: "Usuario no encontrado" }) }
+        return done(null, user)
+    })
 
-    //     return done(null, user)
-    // })
+    const cookieExtractor = req => {
+        let token = null;
+        if (req && req.cookies) {
+            token = req.cookies["token"]
+        }
+        return token
+    }
+    
+    passport.use("jwt", new JwtStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: "Secret-key",
+    }, async(jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload);
+        } catch (error) {
+            return done(error)
+        }
+    }))
+    
 
 }
-
-// const cookieExtractor = req => {
-//     let token = null;
-//     if (req && req.cookies) {
-//         token = req.cookies["token"]
-//     }
-//     return token
-// }
-
-// passport.use("jwt", new jwtStrategy({
-//     jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-//     secretOrKey: "Secret-key",
-// }, async(jwt_payload, done) => {
-//     try {
-
-//         return done(null, jwt_payload);
-//     } catch (error) {
-//         return done(error)
-//     }
-// }))
-
 
 module.exports =  { initializePassport }
