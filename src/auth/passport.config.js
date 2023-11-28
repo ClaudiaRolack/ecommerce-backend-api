@@ -4,6 +4,7 @@ const jwt = require('passport-jwt');
 
 const { usersService} = require('../repositories/index.js');
 const { createHash, isValidPassword } = require('../helpers/Encrypt.js');
+const { SECRET_KEY } = require('../config/config.js');
 
 const localStrategy = local.Strategy;
 const JwtStrategy = jwt.Strategy;
@@ -11,7 +12,7 @@ const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
 
-    passport.use(new localStrategy(
+    passport.use('register', new localStrategy(
 
         { passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
 
@@ -47,10 +48,10 @@ const initializePassport = () => {
         done(null, user);
     });
 
-    passport.use(new localStrategy({ usernameField: "email" }, async (email, password, done) => {
+    passport.use('login', new localStrategy({ usernameField: "email" }, async (username, password, done) => {
 
         try {
-            const user = await usersService.validateUSer(email)
+            const user = await usersService.validateUser(username)
             if (!user) {
                 console.log("El usuario no existe")
                 return done(null, false)
@@ -65,10 +66,9 @@ const initializePassport = () => {
         }
     }))
 
-
     const jwtOptions = {
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: "Secret-key"
+        secretOrKey: SECRET_KEY
     }
 
     new JwtStrategy(jwtOptions, (jwt_payload, done) => {
@@ -87,7 +87,7 @@ const initializePassport = () => {
     
     passport.use("jwt", new JwtStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: "Secret-key",
+        secretOrKey: SECRET_KEY,
     }, async(jwt_payload, done) => {
         try {
             return done(null, jwt_payload);
@@ -96,7 +96,31 @@ const initializePassport = () => {
         }
     }))
     
-
 }
 
-module.exports =  { initializePassport }
+const passportCall = (strategy) => {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, function (err, user, info) {
+            if (err) return next(err)
+            if (!user) {
+                return res.status(401).send({ error: info.messages ? info.messages : info.toString() })
+            }
+            req.user = user
+            next()
+        })(req, res, next)
+    }
+}
+
+const authorization = (role) => {
+    return async (req, res, next) => {
+        if (!req.user) return res.status(401).send({ error: "Unauthorized" })
+        if(req.user.rol != role) return res.status(403).send({ error: "No permissions" })
+        next()
+    }
+}
+
+module.exports =  { 
+    initializePassport, 
+    passportCall, 
+    authorization 
+}

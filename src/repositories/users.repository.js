@@ -18,8 +18,8 @@ class UsersRepository {
         return userById;
     }
 
-    validateUSer = async (param) => {
-        let user = await this.dao.validateUser(param);
+    validateUser = async (email) => {
+        let user = await this.dao.validateUser(email);
         return user;
     }
 

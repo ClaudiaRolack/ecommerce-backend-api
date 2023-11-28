@@ -1,5 +1,8 @@
 const { Router } = require('express');
+
 const { cartsService } = require('../repositories/index.js');
+const { passportCall } = require('../auth/passport.config.js');
+const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 
 const router = Router();
 
@@ -18,7 +21,7 @@ router.get("/:cid", async (req, res) => {
     res.send(await cartsService.getById(cid));
 })
 
-router.put("/:cid", async (req, res) => {
+router.put("/:cid", passportCall('jwt'), authorizationMiddleware(['user']), async (req, res) => {
     let cartId = req.params.cid;
     let newProduct = req.body;
     res.send(await cartsService.addCart(cartId, newProduct));

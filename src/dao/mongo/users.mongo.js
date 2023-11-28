@@ -1,4 +1,5 @@
 const { usersModel } = require('./models/users.model.js');
+const { createHash } = require('../../helpers/Encrypt.js');
 
 class UsersMongo {
 
@@ -10,11 +11,10 @@ class UsersMongo {
             lastName,
             email,
             age,
-            password,
+            password: createHash(password),
             rol
         };
-        console.log(password)
-
+   
         const result = await usersModel.create(newUser);
         return result;
     }
@@ -34,10 +34,10 @@ class UsersMongo {
         }
     }
 
-    validateUser = async (param) => {
+    validateUser = async (email) => {
         try {
-            const user = await usersModel.findOne({ email: param });
-            if (!user) { return "Usuario no encontrado" }
+            const user = await usersModel.findOne({email});
+            if (!user) { return "Usuario no encontrado" };
             return user;
         } catch (error) {
             console.error("Error al validar usuario:", error)

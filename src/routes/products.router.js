@@ -1,10 +1,13 @@
 const { Router } = require('express');
+
 const { ProductsDTO } = require('../dao/DTOs/products.dto.js');
 const { productsService } = require('../repositories/index.js');
+const { passportCall } = require('../auth/passport.config.js');
+const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", passportCall('jwt'), authorizationMiddleware(['admin']), async (req, res) => {
     try {
         let { title, description, category, price, code, stock, availability } = req.body;
         let productData = { title, description, category, price, code, stock, availability };
@@ -28,7 +31,7 @@ router.get("/:pid", async (req, res) => {
     res.send(await productsService.getById(pid));
 })
 
-router.put("/:pid", async (req, res) => {
+router.put("/:pid", passportCall('jwt'), authorizationMiddleware(['admin']), async (req, res) => {
     let { pid } = req.params;
     let productsToReplace = req.body;
     if (!productsToReplace.title || !productsToReplace.description || !productsToReplace.category || !productsToReplace.price || !productsToReplace.code || !productsToReplace.stock || !productsToReplace.availability) {
@@ -39,7 +42,7 @@ router.put("/:pid", async (req, res) => {
     }
 })
 
-router.delete("/:pid", async (req, res) => {
+router.delete("/:pid", passportCall('jwt'), authorizationMiddleware(['admin']), async (req, res) => {
     let { pid } = req.params;
     let result = await productsService.delete(pid);
     res.send({ result: "success", payload: result });
