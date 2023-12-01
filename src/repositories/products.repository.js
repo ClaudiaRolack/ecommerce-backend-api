@@ -25,8 +25,8 @@ class ProductsRepository {
     }
 
     delete = async (id) => {
-        if (product) await this.dao.delete(id);
-        return "Producto Eliminado";
+        let product = await this.dao.delete(id);
+        return product;
     }
 
 };

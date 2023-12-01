@@ -5,7 +5,6 @@ const authorizationMiddleware = (roles) => {
         if (!user) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-
         if (!roles.includes(user.rol)) {
             return res.status(403).json({ error: 'No permissions' });
         }

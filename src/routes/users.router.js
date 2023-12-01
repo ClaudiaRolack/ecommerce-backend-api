@@ -7,6 +7,7 @@ const { usersService } = require('../repositories/index.js');
 const { SECRET_KEY } = require('../config/config.js');
 const { passportCall, authorization } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
+const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get('/failregister', async (req, res) => {
     res.send({ error: 'Falló' })
 });
 
-router.post("/login", passport.authenticate('login', { session: false }), async (req, res) => {
+router.post('/login', passport.authenticate('login', { session: false }), async (req, res) => {
     try {
         let email = req.body.email;
         const data = await usersService.validateUser(email);
@@ -39,29 +40,29 @@ router.post("/login", passport.authenticate('login', { session: false }), async 
         res.cookie("token", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 
         if (data && (await bcrypt.compare(req.body.password, data.password))) {
-            if (data.rol === "admin") {
+            if (data.rol === 'admin') {
                 res.json(token)
             } else {
                 res.json(token)
             }
         } else {
-            res.redirect("../../login");
+            res.redirect('../../login');
         }
 
     } catch (error) {
-        console.error("Error al acceder al perfil:", error);
-        return "Error al acceder al perfil";
+        console.error('Error al acceder al perfil:', error);
+        return 'Error al acceder al perfil';
     }
 });
 
-router.get("/logout", async (req, res) => {
+router.get('/logout', async (req, res) => {
     req.session.destroy((error) => {
-        if (error) { return res.json({ status: "Logout error", body: error }) }
-        res.redirect("../../login")
+        if (error) { return res.json({ status: 'Logout error', body: error }) }
+        res.redirect('../../login')
     });
 });
 
-router.get("/current", passportCall("jwt"), authorization("user"), (req, res) => { 
+router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'admin']), (req, res) => { 
     
     const user = req.user; 
 
@@ -74,5 +75,6 @@ router.get("/current", passportCall("jwt"), authorization("user"), (req, res) =>
 
     res.send(userSafeDTO);
 });
+
 
 module.exports = router

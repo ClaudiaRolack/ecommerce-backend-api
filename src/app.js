@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const usersRouter = require('./routes/users.router.js');
+const ordersRouter = require('./routes/orders.router.js');
 
 const { initializePassport } = require("./auth/passport.config.js");
 
@@ -31,3 +32,4 @@ app.listen(PORT, () => {
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', usersRouter);
+app.use('/api/orders', ordersRouter);
