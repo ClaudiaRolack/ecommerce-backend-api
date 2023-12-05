@@ -34,15 +34,13 @@ class UsersMongo {
         }
     }
 
-    getUserById = async (id) => {
+    userById = async (id) => {
         try {
-            let uid = id;
-            let userById = await usersModel.findById(uid);
-            if (!userById) {
+            let userId = await usersModel.findById(id);
+            if (!userId) {
                 return 'El ID no existe';
-            } else {
-                return userById;
-            }
+            } 
+            return userId;
         } catch (error) {
             console.log(error);
             return null;

@@ -5,11 +5,36 @@ const jwt = require('jsonwebtoken');
 
 const { usersService } = require('../repositories/index.js');
 const { SECRET_KEY } = require('../config/config.js');
-const { passportCall, authorization } = require('../auth/passport.config.js');
+const { passportCall } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 
 const router = Router();
+
+router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'admin']), (req, res) => { 
+    
+    const user = req.user; 
+    console.log(user)
+
+    const userSafeDTO = new UserProfileDTO(
+        user.firstName,
+        user.lastName,
+        user.email,
+        user.rol,
+    );
+
+    res.send(userSafeDTO);
+});
+
+router.get("/:uid", async (req, res) => {
+    try {
+        let { uid } = req.params;
+        let usersData = await usersService.userById(uid);
+        res.send({ result: "success", payload: usersData });
+    } catch (error) {
+        console.log(error);
+    };
+});
 
 router.post('/register', passport.authenticate('register', { session: false }), async (req, res) => {
     try {

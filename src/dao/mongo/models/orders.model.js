@@ -7,7 +7,7 @@ const ordersSchema = new mongoose.Schema({
     purchase_datetime: { type: Date, default: Date.now },
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
     amount: { type: Number, required: true },
-    purchaser: { type: String, required: true }
+    purchaser: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }
 });
 
 const ordersModel = mongoose.model(ordersCollection, ordersSchema);

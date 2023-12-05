@@ -13,10 +13,9 @@ class UsersRepository {
         return user;
     }
 
-    getUserById = async (id) => {
-        let uid = id
-        let userById = await this.dao.getUserById(uid);
-        return userById;
+    userById = async (id) => {
+        let userId = await this.dao.userById(id);
+        return userId;
     }
 
     updateUser = async (id, user) => {

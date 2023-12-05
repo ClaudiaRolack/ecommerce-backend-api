@@ -1,40 +1,89 @@
 const { Router } = require('express');
 
-const { cartsService, usersService, ordersService } = require('../repositories/index.js');
+const { cartsService, ordersService, productsService } = require('../repositories/index.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
+const { generateOrderCode } = require('../helpers/generateCode.js');
 
 const router = Router();
 
 router.post('/', async (req, res) => {
-    let product= req.body;
-    res.send(await cartsService.create(product));
+    try {
+        let carts = req.body;
+        const result = await cartsService.create(carts);
+        res.send(result);
+    } catch (error) {
+        console.error('Error al intentar crear el carrito:', error);
+        res.status(500).send({ success: false, error: 'Error al crear el carrito' });
+    }
 })
 
-router.post('/:cid/purchase', passportCall('jwt'), authorizationMiddleware(['user']), async (req, res) => {
-    const { cid } = req.params.cid;
-    console.log(cid)
-    const resultUser = await usersService.getUserById();
-    const resultCarts = await cartsService.getById();
-    let actualOrders = resultCarts.products.filter(product =>  product.includes(product.id))
-    let sum = actualOrders.reduce((acc, prev) => {
-        acc += prev.price
-        return acc
-    }, 0)
-    let orderNumber = Date.now + Math.floor(Math.random()*10000+1)
-    let order = {
-        number: orderNumber,
-        carts,
-        user,
-        status: "Pending",
-        products: actualOrders.map(product => product.id),
-        totalPrice: sum
+router.post('/:cid/purchase', async (req, res) => {
+    const { cid } = req.params;
+
+    try {
+        const cart = await cartsService.getById(cid);
+
+        const productsNotProcessed = [];
+        const orderDetails = [];
+        let orderTotalAmount = 0;
+
+        for (const product of cart.products) {
+            const productData = await productsService.getById(product.productId);
+
+            if (productData && productData.stock >= product.quantity) {
+                productData.stock -= product.quantity;
+
+                const productAmount = product.quantity * productData.price;
+                orderTotalAmount += productAmount;
+
+                orderDetails.push({
+                    productId: product.productId,
+                    title: productData.title,
+                    quantity: product.quantity,
+                    amount: productAmount,
+                });
+
+                await productData.save();
+            } else {
+                productsNotProcessed.push(product.productId);
+            }
+        }
+
+        if (orderDetails.length > 0) {
+            const orderCode = generateOrderCode();
+
+            const order = await ordersService.createOrder({
+                cartId: cid,
+                cart: cart,
+                details: orderDetails,
+                amount: orderTotalAmount,
+                code: orderCode,
+            });
+
+            await order.save();
+        }
+
+        cart.products = cart.products.filter(product => !productsNotProcessed.includes(product.productId));
+        await cart.save();
+
+        res.send({ success: true, productsNotProcessed, orderDetails });
+    } catch (error) {
+        console.error('Error al procesar la compra:', error);
+        res.status(500).send({ success: false, error: 'Error al procesar la compra' });
     }
-    let orderResult = await ordersService.createOrder(order)
-    resultUser.orders.push(orderResult._id)
-    await usersService.updateUser(user, resultUser)
-    res.send({ status: 'success', result: 'orderResult' })
 });
+
+router.post('/', async (req, res) => {
+    try {
+        let carts = req.body;
+        const result = await cartsService.create(carts);
+        res.send(result);
+    } catch (error) {
+        console.error('Error al intentar crear el carrito:', error);
+        res.status(500).send({ success: false, error: 'Error al crear el carrito' });
+    }
+})
 
 router.get('/', async (req, res) => {
     let cartsData = await cartsService.get()

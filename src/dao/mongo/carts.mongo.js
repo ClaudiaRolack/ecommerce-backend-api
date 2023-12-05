@@ -4,7 +4,7 @@ class CartsMongo {
 
     create = async (carts) => {
         try {
-            let newCart = cartsModel(carts);
+            let newCart = await cartsModel(carts);
             const savedCart = await newCart.save();
             return savedCart;
         } catch (error) {
