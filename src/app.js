@@ -8,6 +8,7 @@ const usersRouter = require('./routes/users.router.js');
 const ordersRouter = require('./routes/orders.router.js');
 
 const { initializePassport } = require("./auth/passport.config.js");
+const { errorHandler } = require('./middlewares/errors/index.js');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -22,6 +23,9 @@ app.use(cookieParser())
 
 initializePassport(passport)
 app.use(passport.initialize())
+
+
+app.use(errorHandler)
 
 
 app.listen(PORT, () => {

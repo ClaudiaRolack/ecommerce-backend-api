@@ -5,6 +5,9 @@ const jwt = require('passport-jwt');
 const { usersService} = require('../repositories/index.js');
 const { createHash, isValidPassword } = require('../helpers/Encrypt.js');
 const { SECRET_KEY } = require('../config/config.js');
+const { generateUserErrorInfo } = require('../services/errors/info.js');
+const { CustomError } = require('../services/errors/customError.js');
+const { EErrors } = require('../services/errors/enums.js');
 
 const localStrategy = local.Strategy;
 const JwtStrategy = jwt.Strategy;
@@ -17,6 +20,15 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
 
             const { firstName, lastName, email, age, rol } = req.body
+            
+            if (!firstName || !lastName || !email || !age || !rol) {
+                CustomError({
+                    name:'User creation error',
+                    cause: generateUserErrorInfo({firstName, lastName, email, age, rol}),
+                    messsagge: 'Error trying to create user',
+                    code: EErrors.INVALID_TYPES_ERROR
+                })
+            }
 
             try {
                 let user = await  usersService.getUserByEmail(email)

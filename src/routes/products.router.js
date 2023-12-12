@@ -1,15 +1,28 @@
 const { Router } = require('express');
-
 const { ProductsDTO } = require('../dao/DTOs/products.dto.js');
 const { productsService } = require('../repositories/index.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
+const { CustomError } = require('../services/errors/customError.js');
+const { generateProductErrorInfo } = require('../services/errors/info.js');
+const { EErrors } = require('../services/errors/enums.js');
+
 
 const router = Router();
 
 router.post('/', passportCall('jwt'), authorizationMiddleware(['admin']), async (req, res) => {
     try {
         let { title, description, category, price, code, stock, availability } = req.body;
+
+        if (!title || !description || !category || !price || !code || !stock || !availability) {
+            CustomError.createError({
+                name: 'Product creation error',
+                cause: generateProductErrorInfo({ title, description, category, price, code, stock, availability }),
+                message: 'Error trying to create product',
+                code: EErrors.INVALID_TYPES_ERROR
+            })
+        }
+
         let productData = { title, description, category, price, code, stock, availability };
         let product = new ProductsDTO(productData);
 

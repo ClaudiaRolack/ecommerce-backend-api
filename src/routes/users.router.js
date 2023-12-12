@@ -1,20 +1,20 @@
-const { Router } = require("express");
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const { Router } = require("express");
 const { usersService } = require('../repositories/index.js');
 const { SECRET_KEY } = require('../config/config.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
+const { generateProducts } = require('../utils.js');
 
 const router = Router();
 
 router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'admin']), (req, res) => { 
     
     const user = req.user; 
-    console.log(user)
 
     const userSafeDTO = new UserProfileDTO(
         user.firstName,
@@ -26,11 +26,20 @@ router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'ad
     res.send(userSafeDTO);
 });
 
+router.get('/mockingproducts', async (req, res) => {
+    let products = []
+    for ( let i = 0; i < 100; i++) {
+        products.push(generateProducts())
+    }
+
+    res.send({ status: "success", payload: products })
+})
+
 router.get("/:uid", async (req, res) => {
     try {
         let { uid } = req.params;
         let usersData = await usersService.userById(uid);
-        res.send({ result: "success", payload: usersData });
+        res.send({ result: "success", payload: usersData, message: 'La solicitud se procesó correctamente' });
     } catch (error) {
         console.log(error);
     };
@@ -86,20 +95,5 @@ router.get('/logout', async (req, res) => {
         res.redirect('../../login')
     });
 });
-
-router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'admin']), (req, res) => { 
-    
-    const user = req.user; 
-
-    const userSafeDTO = new UserProfileDTO(
-        user.firstName,
-        user.lastName,
-        user.email,
-        user.rol,
-    );
-
-    res.send(userSafeDTO);
-});
-
 
 module.exports = router
