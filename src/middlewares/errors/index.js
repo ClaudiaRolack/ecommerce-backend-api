@@ -6,6 +6,9 @@ const errorHandler = (error, req, res, next) => {
         case EErrors.INVALID_TYPES_ERROR:
             res.send({ status: 'error', error: error.name })
             break;
+        case EErrors.ADD_CART_ERROR:
+            res.send({ status: 'error', error: error.name })
+            break;
         default:
             res.send({ status: 'error', error: 'Unhandled error' })
     }

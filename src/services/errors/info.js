@@ -20,4 +20,11 @@ const generateProductErrorInfo = (product) => {
     * availability: needs to be a String, received ${product.availability}`
 }
 
-module.exports = { generateUserErrorInfo, generateProductErrorInfo }
+const generateAddCartErrorInfo = (cart) => {
+    return `One or more properties were incomplete or not valid.
+    List of required properties:
+    * userId: needs to be a String, received ${cart.userId}
+    * products: needs to be an array of objects with productId and quantity, received ${cart.products}`
+}
+
+module.exports = { generateUserErrorInfo, generateProductErrorInfo, generateAddCartErrorInfo }

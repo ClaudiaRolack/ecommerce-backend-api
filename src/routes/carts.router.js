@@ -3,6 +3,8 @@ const { cartsService, ordersService, productsService } = require('../repositorie
 const { passportCall } = require('../auth/passport.config.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 const { generateOrderCode } = require('../helpers/generateCode.js');
+const { EErrors } = require('../services/errors/enums.js');
+const { generateAddCartErrorInfo } = require('../services/errors/info.js');
 
 const router = Router();
 
@@ -95,10 +97,22 @@ router.get('/:cid', async (req, res) => {
 })
 
 router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user']), async (req, res) => {
-    let cartId = req.params.cid;
-    let newProduct = req.body;
-    res.send(await cartsService.addCart(cartId, newProduct));
-})
+    try {
+        let cartId = req.params.cid;
+        let newProduct = req.body;
+        const result = await cartsService.addCart(cartId, newProduct);
+
+        if (result.error) {
+            const errorInfo = generateAddCartErrorInfo(result.error);  
+            return res.status(400).json({ error: errorInfo });
+        }
+
+        res.send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 router.put('/:cid/products/:pid', async (req, res) => {
     let prodId = req.params.pid;
