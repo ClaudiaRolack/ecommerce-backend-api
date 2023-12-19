@@ -3,7 +3,6 @@ const { cartsService, ordersService, productsService } = require('../repositorie
 const { passportCall } = require('../auth/passport.config.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 const { generateOrderCode } = require('../helpers/generateCode.js');
-const { EErrors } = require('../services/errors/enums.js');
 const { generateAddCartErrorInfo } = require('../services/errors/info.js');
 
 const router = Router();

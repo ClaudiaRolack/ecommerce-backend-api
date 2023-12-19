@@ -8,7 +8,7 @@ const { SECRET_KEY } = require('../config/config.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
-const { generateProducts } = require('../utils.js');
+const { generateProducts } = require('../utils/faker.js');
 
 const router = Router();
 
