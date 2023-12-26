@@ -3,8 +3,8 @@ class ProductsRepository {
         this.dao = dao
     }
 
-    create = async (productData) => {
-        let product = await this.dao.create(productData);
+    create = async (productData, user) => {
+        let product = await this.dao.create(productData, user);
         return product;
     }
 

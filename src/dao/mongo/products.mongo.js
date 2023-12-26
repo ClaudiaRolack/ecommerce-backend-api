@@ -1,10 +1,22 @@
 const { productsModel } = require('./models/products.model.js');
+const { usersModel } = require('./models/users.model.js');
 
 class ProductsMongo {
 
-    create = async (productData) => {
+    create = async (productData, user) => {
         try {
             this.validateProductData(productData);
+
+            if (!productData.owner) {
+                productData.owner = 'admin';
+            }
+
+            if (user && user.rol === 'premium') {
+                productData.owner = user.email;
+            } else {
+                return null;
+            }
+
             const newProduct = await productsModel.create(productData);
             return newProduct;
         } catch (error) {
@@ -55,13 +67,16 @@ class ProductsMongo {
     delete = async (id) => {
         try {
             let pid = id;
-            let product = await productsModel.findById(pid);
-            if (product) {
-                await product.deleteOne({ _id: pid });
+            const result = await productsModel.findOneAndDelete({ _id: pid });
+
+            if (result) {
+                console.log('Producto eliminado:', result);
                 return 'Producto eliminado';
             } else {
+                console.log('Producto no encontrado');
                 return 'Producto no encontrado';
             }
+            
         } catch (error) {
             console.log(error);
             return null;

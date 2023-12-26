@@ -25,7 +25,7 @@ const initializePassport = () => {
                 CustomError({
                     name:'User creation error',
                     cause: generateUserErrorInfo({firstName, lastName, email, age, rol}),
-                    messsagge: 'Error trying to create user',
+                    messsagge: 'Error al crear el usuario',
                     code: EErrors.INVALID_TYPES_ERROR
                 })
             }
@@ -56,8 +56,12 @@ const initializePassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let user = await usersService.getUserById(id);
-        done(null, user);
+        try {
+            let user = await usersService.getUserById(id);
+            done(null, user);
+        } catch (error) {
+            done(error, null);
+        }
     });
 
     passport.use('login', new localStrategy({ usernameField: "email" }, async (username, password, done) => {

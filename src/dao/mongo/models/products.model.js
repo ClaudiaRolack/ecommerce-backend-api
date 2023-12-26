@@ -10,7 +10,8 @@ const productsSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     code: { type: String, max: 30, required: true },
     stock: { type: Number },
-    availability: { type: String, enum: ["inStock", "outOfStock"] }
+    availability: { type: String, enum: ["inStock", "outOfStock"] },
+    owner: String
 });
 
 productsSchema.plugin(mongoosePaginate);

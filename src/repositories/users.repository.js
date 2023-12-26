@@ -23,6 +23,11 @@ class UsersRepository {
         return update;
     }
 
+    updatePassword = async (token, newPassword) => {
+        let update = await this.dao.updatePassword(token, newPassword);
+        return update;
+    }
+
     validateUser = async (email) => {
         let user = await this.dao.validateUser(email);
         return user;
