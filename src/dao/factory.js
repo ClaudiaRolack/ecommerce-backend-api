@@ -1,4 +1,4 @@
-const config = require('../config/config.js');
+const config = require('../config/dotenv.js');
 const { connectToDatabase } = require('../config/database.js');
 
 let Products 

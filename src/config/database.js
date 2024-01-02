@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MONGO_URL } = require('../config/config');
+const { MONGO_URL } = require('./dotenv.js');
 const logger = require('../utils/logger.js'); 
 
 const connectToDatabase = async () => {

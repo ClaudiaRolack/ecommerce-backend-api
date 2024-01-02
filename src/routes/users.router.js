@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const { Router } = require("express");
 const { usersService } = require('../repositories/index.js');
-const { SECRET_KEY, NODEMAILER_EMAIL } = require('../config/config.js');
+const { SECRET_KEY, NODEMAILER_EMAIL } = require('../config/dotenv.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');

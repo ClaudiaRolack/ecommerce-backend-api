@@ -36,23 +36,38 @@ router.post('/', passportCall('jwt'), authorizationMiddleware(['admin', 'premium
 })
 
 router.get('/', async (req, res) => {
-    let result = await productsService.get();
-    res.send({ status: 'success', payload: result });
+    try {
+        let result = await productsService.get();
+        res.send({ status: 'success', payload: result });
+    } catch (error) {
+        console.error('Error al traer los productos:', error);
+        return res.status(500).json({ result: 'error', error: error.message });
+    }
 })
 
 router.get('/:pid', async (req, res) => {
-    let { pid } = req.params;
-    res.send(await productsService.getById(pid));
+    try {
+        let { pid } = req.params;
+        res.send(await productsService.getById(pid));
+    } catch (error) {
+        console.error('Error al buscar el producto por su ID:', error);
+        return res.status(500).json({ result: 'error', error: error.message });
+    }
 })
 
 router.put('/:pid', passportCall('jwt'), authorizationMiddleware(['admin']), async (req, res) => {
-    let { pid } = req.params;
-    let productsToReplace = req.body;
-    if (!productsToReplace.title || !productsToReplace.description || !productsToReplace.category || !productsToReplace.price || !productsToReplace.code || !productsToReplace.stock || !productsToReplace.availability) {
-        res.send({ status: "error", error: "No hay datos en parametros" });
-    } else {
-        let result = await productsService.update({ _id: pid }, productsToReplace);
-        res.send({ result: 'success', payload: result });
+    try {
+        let { pid } = req.params;
+        let productsToReplace = req.body;
+        if (!productsToReplace.title || !productsToReplace.description || !productsToReplace.category || !productsToReplace.price || !productsToReplace.code || !productsToReplace.stock || !productsToReplace.availability) {
+            res.send({ status: "error", error: "No hay datos en parametros" });
+        } else {
+            let result = await productsService.update({ _id: pid }, productsToReplace);
+            res.send({ result: 'success', payload: result });
+        }
+    } catch (error) {
+        console.error('Error al actualizar el producto por su ID:', error);
+        return res.status(500).json({ result: 'error', error: error.message });
     }
 })
 

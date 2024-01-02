@@ -74,26 +74,26 @@ router.post('/:cid/purchase', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
-    try {
-        let carts = req.body;
-        const result = await cartsService.create(carts);
-        res.send(result);
-    } catch (error) {
-        console.error('Error al intentar crear el carrito:', error);
-        res.status(500).send({ success: false, error: 'Error al crear el carrito' });
-    }
-})
 
 router.get('/', async (req, res) => {
+    try {
     let cartsData = await cartsService.get()
     res.send({ result: 'success', payload: cartsData });
-})
+    } catch (error) {
+        console.error('Error al traer los carritos:', error);
+        res.status(500).send({ success: false, error: 'Error al procesar la compra' });
+    }
+});
 
 router.get('/:cid', async (req, res) => {
+    try {
     let { cid } = req.params;
     res.send(await cartsService.getById(cid));
-})
+    } catch (error) {
+        console.error('Error al traer el carrito por ID:', error);
+        res.status(500).send({ success: false, error: 'Error al procesar la compra' });
+    }
+});
 
 router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user']), async (req, res) => {
     try {
@@ -114,21 +114,36 @@ router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user']), asyn
 });
 
 router.put('/:cid/products/:pid', async (req, res) => {
+    try{
     let prodId = req.params.pid;
     let cartId = req.params.cid;
     let newQuantity = req.body;
     res.send(await cartsService.updateProductInCart(prodId, cartId, newQuantity));
-})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 router.delete('/:cid/products/:pid', async (req, res) => {
+    try {
     let prodId = req.params.pid;
     let cartId = req.params.cid;
     res.send(await cartsService.deleteProduct(prodId, cartId));
-})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 router.delete('/:cid', async (req, res) => {
+    try {
     let cartId = req.params.cid;
     res.send(await cartsService.deleteAllProducts(cartId));
-})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 module.exports = router

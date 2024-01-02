@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const { usersModel } = require('./models/users.model.js');
 const { createHash } = require('../../helpers/Encrypt.js');
-const { SECRET_KEY } = require('../../config/config.js');
+const { SECRET_KEY } = require('../../config/dotenv.js');
 
 
 class UsersMongo {

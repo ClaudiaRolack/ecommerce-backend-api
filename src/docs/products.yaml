@@ -1,0 +1,342 @@
+paths:
+  /api/products/:
+    post:
+      summary: Crear un nuevo producto
+      tags:
+        - Products
+      security:
+        - jwt: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Título del producto
+                  example: "Producto de ejemplo"
+                description:
+                  type: string
+                  description: Descripción del producto
+                  example: "Descripción detallada del producto"
+                category:
+                  type: string
+                  description: Categoría del producto
+                  example: "Electrónicos"
+                price:
+                  type: number
+                  description: Precio del producto
+                  example: 49.99
+                code:
+                  type: string
+                  description: Código del producto
+                  example: "code1"
+                stock:
+                  type: integer
+                  description: Cantidad en stock
+                  example: 100
+                availability:
+                  type: string
+                  enum:
+                    - "inStock"
+                    - "outOfStock"
+                  description: Disponibilidad del producto
+                  example: "inStock"
+
+      responses:
+        "201":
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "success"
+                  payload:
+                    type: object
+                    $ref: '#/src/dao/mongo/models/products'
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Error al crear el producto"
+
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Products
+
+      responses:
+        "200":
+          description: Datos obtenidos satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/src/dao/mongo/models/products'
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Error al traer todos los productos"
+
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto por ID
+      tags:
+        - Products
+
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    $ref: '#/src/dao/mongo/models/products'
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Producto no encontrado"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Error al buscar el producto por su ID"
+
+
+    put:
+      summary: Actualizar un producto por ID
+      tags:
+        - Products
+      security:
+        - jwt: []
+
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Título del producto
+                  example: "Producto actualizado"
+                description:
+                  type: string
+                  description: Descripción del producto
+                  example: "Descripción actualizada"
+                category:
+                  type: string
+                  description: Categoría del producto
+                  example: "Electrónicos"
+                price:
+                  type: number
+                  description: Precio del producto
+                  example: 59.99
+                code:
+                  type: string
+                  description: Código del producto
+                  example: "code1"
+                stock:
+                  type: integer
+                  description: Cantidad en stock
+                  example: 75
+                availability:
+                  type: string
+                  enum:
+                    - "inStock"
+                    - "outOfStock"
+                  description: Disponibilidad del producto
+                  example: "inStock"
+
+      responses:
+        "200":
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "success"
+                  payload:
+                    $ref: '#/src/dao/mongo/models/products'
+        "400":
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Parámetros inválidos"
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Producto no encontrado"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Error al actualizar el producto"
+
+  /api/products/{productId}:
+    delete:
+      summary: Eliminar un producto por ID
+      tags:
+        - Products
+      security:
+        - jwt: []
+
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "success"
+                  payload:
+                    type: string
+                    example: "Producto eliminado"
+        "403":
+          description: No tienes permisos para eliminar este producto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "No tienes permisos para eliminar este producto"
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Producto no encontrado"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "error"
+                  error:
+                    type: string
+                    example: "Error al eliminar un producto por su ID"
+
