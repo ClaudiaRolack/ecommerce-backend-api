@@ -26,13 +26,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/app.js",
+    "ptest": "mocha test/products.test.js --timeout 5000",
+    "ctest": "mocha test/carts.test.js --timeout 10000",
+    "stest": "mocha test/sessions.test.js --timeout 5000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "chai": "^4.0.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }
