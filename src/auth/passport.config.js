@@ -75,6 +75,10 @@ const initializePassport = () => {
             if (!isValidPassword(user, password)) {
                 return done(null, false)
             }
+
+            user.updateLastConnection();
+            await user.save();
+
             return done(null, user)
             
         } catch (error) {

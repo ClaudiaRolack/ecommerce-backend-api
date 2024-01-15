@@ -8,6 +8,7 @@ const cartsRouter = require('./routes/carts.router.js');
 const usersRouter = require('./routes/users.router.js');
 const ordersRouter = require('./routes/orders.router.js');
 const loggerRouter = require('./routes/logger.router.js');
+const userPremium = require('./routes/usersPremium.router.js');
 
 const { initializePassport } = require("./auth/passport.config.js");
 const { errorHandler } = require('./middlewares/errors/index.js');
@@ -50,3 +51,4 @@ app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', usersRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/loggerTest', loggerRouter);
+app.use('api/users', userPremium);

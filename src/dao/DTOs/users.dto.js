@@ -7,6 +7,7 @@ class UsersDTO {
     password;
     rol;
     cart;
+    last_connection;
 
     constructor(userData) {
         this.firstName = userData.firstName;
@@ -15,7 +16,8 @@ class UsersDTO {
         this.age = userData.age;
         this.password = userData.password;
         this.rol = userData.rol;
-        this.cart = userData.cart
+        this.cart = userData.cart,
+        this.last_connection = userData.last_connection
     }
 }
 
