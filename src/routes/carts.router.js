@@ -95,7 +95,7 @@ router.get('/:cid', async (req, res) => {
     }
 });
 
-router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user']), async (req, res) => {
+router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user', 'premium']), async (req, res) => {
     try {
         let cartId = req.params.cid;
         let newProduct = req.body;

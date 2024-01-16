@@ -51,4 +51,4 @@ app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', usersRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/loggerTest', loggerRouter);
-app.use('api/users', userPremium);
+app.use('/api/users', userPremium);
