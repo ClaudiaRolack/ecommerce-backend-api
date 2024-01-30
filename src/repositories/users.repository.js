@@ -8,6 +8,11 @@ class UsersRepository {
         return newUser;
     }
 
+    getAllUsers = async (users) => {
+        let user = await this.dao.getAllUsers(users);
+        return user;
+    }
+
     getUserByEmail = async (email) => {
         let user = await this.dao.getUserByEmail(email);
         return user;
@@ -30,6 +35,21 @@ class UsersRepository {
 
     validateUser = async (email) => {
         let user = await this.dao.validateUser(email);
+        return user;
+    }
+
+    getCandidatesForDeletion = async (lastConnection) => {
+        let connection = await this.dao.getCandidatesForDeletion(lastConnection);
+        return connection;
+    }
+
+    sendDeletionEmail = async (email) => {
+        let deletionEmail = await this.dao.sendDeletionEmail(email);
+        return deletionEmail;
+    }
+
+    deleteUser = async (id) => {
+        let user = await this.dao.deleteUser(id);
         return user;
     }
 

@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const { usersModel } = require('./models/users.model.js');
 const { createHash } = require('../../helpers/Encrypt.js');
 const { SECRET_KEY } = require('../../config/dotenv.js');
+const { transporter } = require('../../helpers/nodemailer.js');
+const { NODEMAILER_EMAIL } = require('../../config/dotenv.js');
 
 
 class UsersMongo {
@@ -28,6 +30,16 @@ class UsersMongo {
             return null;
         }
     }
+
+    getAllUsers = async () => {
+        try {
+            const users = await usersModel.find({}, { _id: 0, firstName: 1, email: 1, rol: 1 }).lean(); 
+            return users;
+        } catch (error) {
+            console.error('Error al obtener usuarios desde la base de datos:', error);
+            throw new Error('Error interno al obtener usuarios');
+        }
+    };
 
     getUserByEmail = async (email) => {
         try {
@@ -109,6 +121,41 @@ class UsersMongo {
             return null;
         };
     };
+
+    getCandidatesForDeletion = async (lastConnection) => {
+        try {
+            return await usersModel.find({ last_connection: { $lt: lastConnection } });
+        } catch (error) {
+            console.error('Error al obtener candidatos para eliminación:', error);
+            throw new Error('Error interno al obtener candidatos para eliminación');
+        }
+    }
+
+    sendDeletionEmail = async (email) => {
+        try {
+            const mailOptions = {
+                from: NODEMAILER_EMAIL,
+                to: email,
+                subject: 'Eliminación de cuenta por inactividad',
+                text: 'Tu cuenta ha sido eliminada debido a inactividad durante los últimos 30 minutos.',
+            };
+
+            await transporter.sendMail(mailOptions);
+        } catch (error) {
+            console.error('Error al enviar correo de eliminación:', error);
+            throw new Error('Error interno al enviar correo de eliminación');
+        }
+    }
+
+    deleteUser = async (id) => {
+        try {
+            const user = await usersModel.findByIdAndDelete({id});
+            return user;
+        } catch (error) {
+            console.error('Error al eliminar usuario:', error);
+            throw new Error('Error interno al eliminar usuario');
+        }
+    }
 
 }
 

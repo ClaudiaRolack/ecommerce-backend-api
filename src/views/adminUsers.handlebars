@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminUsers</title>
+</head>
+
+<body>
+
+    {{#if admin}}
+    <h1>Gestión de usuarios</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{firstName}}</td>
+                <td>{{email}}</td>
+                <td>
+                    <select>
+                        <option value="user">Usuario</option>
+                        <option value="premium">Premium</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="delete-user" data-user-id="{{_id}}">Eliminar</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <h1>No tienes permisos de administrador para ver esta página.</h1>
+    {{/if}}
+
+    <script src="/js/adminUsers.js"></script>
+
+</body>
+
+</html>
