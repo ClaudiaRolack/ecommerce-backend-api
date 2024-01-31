@@ -33,7 +33,7 @@ class UsersMongo {
 
     getAllUsers = async () => {
         try {
-            const users = await usersModel.find({}, { _id: 0, firstName: 1, email: 1, rol: 1 }).lean(); 
+            const users = await usersModel.find({}, { _id: 1, firstName: 1, email: 1, rol: 1 }).lean(); 
             return users;
         } catch (error) {
             console.error('Error al obtener usuarios desde la base de datos:', error);
@@ -147,9 +147,21 @@ class UsersMongo {
         }
     }
 
+    UpdateUserRol = async (userId, newRole) => {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+            if (!updatedUser) {
+                throw new Error('Usuario no encontrado');
+            }
+            return updatedUser;
+        } catch (error) {
+            throw new Error('Error al actualizar el rol del usuario');
+        }
+    }
+
     deleteUser = async (id) => {
         try {
-            const user = await usersModel.findByIdAndDelete({id});
+            const user = await usersModel.findByIdAndDelete(id);
             return user;
         } catch (error) {
             console.error('Error al eliminar usuario:', error);

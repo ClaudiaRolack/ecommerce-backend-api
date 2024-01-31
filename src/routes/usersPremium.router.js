@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
     try {
 
         const user = await usersService.getAllUsers(user => ({
+            _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
@@ -102,8 +103,27 @@ router.put('/premium/:uid', async (req, res) => {
         console.error('Error al cambiar el rol del usuario:', error);
         return res.status(500).json({ message: 'Error interno del servidor' });
     }
-
+ 
 });
+
+router.put('/:userId/role', async (req, res) => {
+    const id = req.params.userId;
+    const { role } = req.body;
+
+    try {
+        const updatedUser = await usersService.UpdateUserRol(id, role)
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        return res.status(200).json({ message: 'Rol de usuario actualizado correctamente', user: updatedUser });
+    } catch (error) {
+        console.error('Error al actualizar el rol del usuario:', error);
+        return res.status(500).json({ error: 'Error interno al actualizar el rol del usuario' });
+    }
+});
+
 
 router.delete('/', async (req, res) => {
     try {

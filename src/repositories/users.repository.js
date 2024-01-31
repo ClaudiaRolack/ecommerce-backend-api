@@ -48,6 +48,11 @@ class UsersRepository {
         return deletionEmail;
     }
 
+    UpdateUserRol = async (id) => {
+        let user = await this.dao.UpdateUserRol(id, newRole);
+        return user;
+    }
+
     deleteUser = async (id) => {
         let user = await this.dao.deleteUser(id);
         return user;
