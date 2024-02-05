@@ -22,10 +22,17 @@ router.get('/current', passportCall('jwt'), authorizationMiddleware(['user', 'ad
         user.lastName,
         user.email,
         user.rol,
+        user.cartId,
     );
 
     res.send(userSafeDTO);
 });
+
+router.get('/viewLogin', async (req, res) => {
+    let email = req.body.email;
+    let usersData = await usersService.getUserByEmail(email);
+    res.render('viewLogin', {usersData});
+})
 
 router.get('/mockingproducts', async (req, res) => {
     let products = []
@@ -70,8 +77,9 @@ router.post('/login', passport.authenticate('login', { session: false }), async 
         const firstName = data.firstName;
         const lastName = data.lastName;
         const rol = data.rol;
+        const cartId = data.cart;
 
-        const token = jwt.sign({ email, firstName, lastName, rol }, SECRET_KEY, { expiresIn: "24h" });
+        const token = jwt.sign({ email, firstName, lastName, rol, cartId }, SECRET_KEY, { expiresIn: "24h" });
         res.cookie("token", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 
         if (data && (await bcrypt.compare(req.body.password, data.password))) {

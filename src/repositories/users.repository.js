@@ -3,8 +3,8 @@ class UsersRepository {
         this.dao = dao
     }
 
-    createUser = async (userData) => {
-        let newUser = await this.dao.createUser(userData);
+    createUser = async (userData, carts) => {
+        let newUser = await this.dao.createUser(userData, carts);
         return newUser;
     }
 
@@ -48,7 +48,7 @@ class UsersRepository {
         return deletionEmail;
     }
 
-    UpdateUserRol = async (id) => {
+    UpdateUserRol = async (id, newRole) => {
         let user = await this.dao.UpdateUserRol(id, newRole);
         return user;
     }

@@ -8,8 +8,8 @@ class CartsRepository {
         return newCarts;
     }
 
-    addCart = async (cartId, newProduct) => {
-        let addCart = await this.dao.addCart(cartId, newProduct);
+    addCart = async (cartId, productId, quantity) => {
+        let addCart = await this.dao.addCart(cartId, productId, quantity);
         return addCart;
     }
 
@@ -19,13 +19,18 @@ class CartsRepository {
         return carts;
     }
 
+    findCartItem = async (cartId, productId) => {
+        let carts = await this.dao.findCartItem(cartId, productId);
+        return carts;
+    }
+
     getById = async (id) => {
         let cartsById = await this.dao.getById(id);
         return cartsById;
     }
 
-    updateProductInCart = async (prodId, cartId, newQuantity) => {
-        let updatedQuantity = await this.dao.updateProductInCart(prodId, cartId, newQuantity);
+    updateProductInCart = async (productId, cartId, newQuantity) => {
+        let updatedQuantity = await this.dao.updateProductInCart(productId, cartId, newQuantity);
         return updatedQuantity;
     }
 

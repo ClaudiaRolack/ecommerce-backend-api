@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+</head>
+
+<body>
+
+    <h1>Bienvenido/a <span id="firstName"></span></h1>
+    <h4>Rol: <span id="rol"></span></h4>
+    <h4>Email: <span id="email"></span></h4>
+
+    <h4><a data-cart-id="" href="/api/carts/view/{{cartId}}">Carrito</a></h4>
+
+
+    <h1>Productos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Comprar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <td>{{title}}</td>
+                <td>{{description}}</td>
+                <td>{{stock}}</td>
+                <td>{{price}}</td>
+                <td>
+                    <button class="quantity-button" onclick="decreaseQuantity()" id="decrease-button">-</button>
+                    <span id="quantity-display">1</span>
+                    <button class="quantity-button" onclick="increaseQuantity()" id="increase-button">+</button>
+                </td>
+                <td>
+                    <button id="add-cart" class="add-cart" data-product-id="{{_id}}" data-cart-id="{{cartId}}">Agregar al carrito</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+
+    </table>
+
+    <script src="/js/viewProducts.js"></script>
+
+</body>
+
+</html>

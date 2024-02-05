@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         console.log('Rol de usuario actualizado correctamente:', data);
                     })
                     .catch(error => {
-                        console.error('Error al cambiar el rol del usuario:', error);
+                        console.error('Error al cambiar el rol del usuario, debe subir los tres documentos:', error);
                     });
             } else {
                 fetch(`/api/users/${userId}/role`, {

@@ -7,6 +7,8 @@ const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 const { CustomError } = require('../services/errors/customError.js');
 const { generateProductErrorInfo } = require('../services/errors/info.js');
 const { EErrors } = require('../services/errors/enums.js');
+const { transporter } = require('../helpers/nodemailer.js');
+const { NODEMAILER_EMAIL } = require('../config/dotenv.js');
 
 
 const router = Router();
@@ -39,6 +41,16 @@ router.get('/', async (req, res) => {
     try {
         let result = await productsService.get();
         res.send({ status: 'success', payload: result });
+    } catch (error) {
+        console.error('Error al traer los productos:', error);
+        return res.status(500).json({ result: 'error', error: error.message });
+    }
+})
+
+router.get('/view', async (req, res) => {
+    try {
+        let result = await productsService.get();
+        res.render('viewProducts', {result})
     } catch (error) {
         console.error('Error al traer los productos:', error);
         return res.status(500).json({ result: 'error', error: error.message });
@@ -86,10 +98,29 @@ router.delete('/:productId', passportCall('jwt'), authorizationMiddleware(['admi
             if (product.owner !== user.email) {
                 return res.status(403).json({ result: 'error', error: 'No tienes permisos para eliminar este producto.' });
             }
-        }
 
-        const result = await productsService.delete(pid);
-        return res.status(200).json({ result: 'success', payload: result });
+            const result = await productsService.delete(pid);
+
+            const mailOptions = {
+                from: NODEMAILER_EMAIL,
+                to: user.email,
+                subject: 'Producto eliminado',
+                text: `Hola ${user.firstName},\n\nTu producto ${product.title} ha sido eliminado.`
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log('Error al enviar el correo:', error);
+                } else {
+                    console.log('Correo enviado:', info.response);
+                }
+            });
+
+            return res.status(200).json({ result: 'success', payload: result });
+        } else {
+            const result = await productsService.delete(pid);
+            return res.status(200).json({ result: 'success', payload: result });
+        }
 
     } catch (error) {
         console.error('Error al eliminar producto:', error);

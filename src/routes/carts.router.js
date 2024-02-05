@@ -18,6 +18,28 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.post('/:cartId/products/:productId', async (req, res) => {
+    try {
+        let productId = req.params.productId;
+        let cartId = req.params.cartId;
+        let newQuantity = req.body.quantity;
+
+        let existingCartItem = await cartsService.findCartItem(cartId, productId);
+
+        if (existingCartItem) {
+            let updatedCartItem = await cartsService.updateProductInCart(productId, cartId, newQuantity);
+            res.status(200).json({ message: 'Cantidad del producto actualizada en el carrito' });
+        } else {
+            let addedCartItem = await cartsService.addCart(cartId, productId, newQuantity);
+            res.status(201).json({ message: 'Producto agregado al carrito correctamente' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+
 router.post('/:cid/purchase', async (req, res) => {
     const { cid } = req.params;
 
@@ -74,35 +96,35 @@ router.post('/:cid/purchase', async (req, res) => {
     }
 });
 
-
-router.get('/', async (req, res) => {
+router.get('/view/:cartId', async (req, res) => {
     try {
-    let cartsData = await cartsService.get()
-    res.send({ result: 'success', payload: cartsData });
+        const id = req.params.cartId;
+        let cartsData = await cartsService.get(id)
+        res.render('viewCarts', { cartsData })
     } catch (error) {
-        console.error('Error al traer los carritos:', error);
-        res.status(500).send({ success: false, error: 'Error al procesar la compra' });
+        console.error('Error al traer el carrito por ID:', error);
+        res.status(500).send({ success: false, error: 'Error al traer el carrito' });
     }
 });
 
 router.get('/:cid', async (req, res) => {
     try {
-    let { cid } = req.params;
-    res.send(await cartsService.getById(cid));
+        let { cid } = req.params;
+        res.send(await cartsService.getById(cid));
     } catch (error) {
         console.error('Error al traer el carrito por ID:', error);
         res.status(500).send({ success: false, error: 'Error al procesar la compra' });
     }
 });
 
-router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user', 'premium']), async (req, res) => {
+router.put('/:cartId', passportCall('jwt'), authorizationMiddleware(['user', 'premium']), async (req, res) => {
     try {
-        let cartId = req.params.cid;
+        let cartId = req.params.cartId;
         let newProduct = req.body;
         const result = await cartsService.addCart(cartId, newProduct);
 
         if (result.error) {
-            const errorInfo = generateAddCartErrorInfo(result.error);  
+            const errorInfo = generateAddCartErrorInfo(result.error);
             return res.status(400).json({ error: errorInfo });
         }
 
@@ -114,11 +136,11 @@ router.put('/:cid', passportCall('jwt'), authorizationMiddleware(['user', 'premi
 });
 
 router.put('/:cid/products/:pid', async (req, res) => {
-    try{
-    let prodId = req.params.pid;
-    let cartId = req.params.cid;
-    let newQuantity = req.body;
-    res.send(await cartsService.updateProductInCart(prodId, cartId, newQuantity));
+    try {
+        let prodId = req.params.pid;
+        let cartId = req.params.cid;
+        let newQuantity = req.body;
+        res.send(await cartsService.updateProductInCart(prodId, cartId, newQuantity));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -127,9 +149,9 @@ router.put('/:cid/products/:pid', async (req, res) => {
 
 router.delete('/:cid/products/:pid', async (req, res) => {
     try {
-    let prodId = req.params.pid;
-    let cartId = req.params.cid;
-    res.send(await cartsService.deleteProduct(prodId, cartId));
+        let prodId = req.params.pid;
+        let cartId = req.params.cid;
+        res.send(await cartsService.deleteProduct(prodId, cartId));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -138,8 +160,8 @@ router.delete('/:cid/products/:pid', async (req, res) => {
 
 router.delete('/:cid', async (req, res) => {
     try {
-    let cartId = req.params.cid;
-    res.send(await cartsService.deleteAllProducts(cartId));
+        let cartId = req.params.cid;
+        res.send(await cartsService.deleteAllProducts(cartId));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });

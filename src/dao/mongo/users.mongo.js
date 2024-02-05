@@ -6,13 +6,14 @@ const { createHash } = require('../../helpers/Encrypt.js');
 const { SECRET_KEY } = require('../../config/dotenv.js');
 const { transporter } = require('../../helpers/nodemailer.js');
 const { NODEMAILER_EMAIL } = require('../../config/dotenv.js');
+const { cartsModel } = require('./models/carts.model.js');
 
 
 class UsersMongo {
 
-    createUser = async (userData) => {
+    createUser = async (userData, carts) => {
         try {
-            const { firstName, lastName, email, age, password, rol } = userData;
+            const { firstName, lastName, email, age, password, rol,cart } = userData;
 
             const newUser = {
                 firstName,
@@ -20,8 +21,14 @@ class UsersMongo {
                 email,
                 age,
                 password: createHash(password),
-                rol
+                rol,
+                cart
             };
+
+            if (rol === 'user' || rol === 'premium') {
+                const newCart = await cartsModel.create(carts);
+                newUser.cart = newCart._id;
+            }
 
             const result = await usersModel.create(newUser);
             return result;
@@ -33,7 +40,7 @@ class UsersMongo {
 
     getAllUsers = async () => {
         try {
-            const users = await usersModel.find({}, { _id: 1, firstName: 1, email: 1, rol: 1 }).lean(); 
+            const users = await usersModel.find({}, { _id: 1, firstName: 1, email: 1, rol: 1 }).lean();
             return users;
         } catch (error) {
             console.error('Error al obtener usuarios desde la base de datos:', error);
@@ -114,6 +121,7 @@ class UsersMongo {
     validateUser = async (email) => {
         try {
             const user = await usersModel.findOne({ email });
+            console.log(user)
             if (!user) { return 'Usuario no encontrado' };
             return user;
         } catch (error) {
@@ -149,11 +157,11 @@ class UsersMongo {
 
     UpdateUserRol = async (userId, newRole) => {
         try {
-            const updatedUser = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+            const updatedUser = await usersModel.findByIdAndUpdate(userId, { rol: newRole }, { new: true });
             if (!updatedUser) {
                 throw new Error('Usuario no encontrado');
             }
-            return updatedUser;
+            return updatedUser.save();
         } catch (error) {
             throw new Error('Error al actualizar el rol del usuario');
         }

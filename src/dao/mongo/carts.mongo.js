@@ -13,20 +13,18 @@ class CartsMongo {
         }
     }
 
-    addCart = async (cartId, newProduct) => {
+    addCart = async (cartId, productId, quantity) => {
         try {
-            const cart = await cartsModel.findById(cartId);
-            if (!cart) { return 'Carrito no encontrado' }
-            const beforeInsertNewProduct = {
-                productId: newProduct.productId,
-                quantity: newProduct.quantity
-            }
-            cart.products = [...cart.products, beforeInsertNewProduct];
-            await cart.save();
-            return 'Carrito actualizado con nuevos productos';
+            const newCartItem = new cartsModel({
+                cart: cartId,
+                product: productId,
+                quantity: quantity
+            });
+            await newCartItem.save();
+            return newCartItem;
         } catch (error) {
-            console.log(error)
-            return null
+            console.error('Error al agregar el producto al carrito:', error);
+            throw new Error('Error al agregar el producto al carrito');
         }
     }
 
@@ -37,6 +35,16 @@ class CartsMongo {
         } catch (error) {
             console.log(error)
             return null
+        }
+    }
+
+    findCartItem = async (cartId, productId) => {
+        try {
+            const cartItem = await cartsModel.findOne({ cart: cartId, product: productId });
+            return cartItem;
+        } catch (error) {
+            console.error('Error al buscar el elemento del carrito:', error);
+            throw new Error('Error al buscar el elemento del carrito');
         }
     }
 
@@ -55,18 +63,17 @@ class CartsMongo {
         }
     }
 
-    updateProductInCart = async (prodId, cartId, newQuantity) => {
+    updateProductInCart = async (productId, cartId, newQuantity) => {
         try {
-            const carts = await cartsModel.findById(cartId);
-            if (!carts) { return 'Carrito no encontrado' };
-            const productToUpdate = carts.products.find((product) => product._id == prodId);
-            if (!productToUpdate) { return 'Producto no encontrado en el carrito' };
-            productToUpdate.quantity = newQuantity.quantity;
-            await carts.save();
-            return 'Cantidad actualizada con exito';
+            const cartItem = await cartsModel.findOneAndUpdate(
+                { cart: cartId, product: productId },
+                { quantity: newQuantity },
+                { new: true }
+            );
+            return cartItem;
         } catch (error) {
-            console.log(error)
-            return null
+            console.error('Error al actualizar la cantidad del producto en el carrito:', error);
+            throw new Error('Error al actualizar la cantidad del producto en el carrito');
         }
     }
 

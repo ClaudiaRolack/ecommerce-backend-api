@@ -2,25 +2,12 @@ const { Router } = require('express');
 const { usersService } = require('../repositories/index.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 const { passportCall } = require('../auth/passport.config.js');
-const jwt = require('jsonwebtoken');
 const upload = require('../middlewares/multerMiddleware.js');
 
 const router = Router();
 
-// router.get('/', authorizationMiddleware(['admin']), async (req, res) => {
-
-//     const allUsers = await usersService.getAllUsers(user => ({
-//         name: user.name,
-//         email: user.email,
-//         role: user.role,
-//     }));
-
-//     res.json(allUsers);
-// });
-
 
 // passportCall('jwt'), authorizationMiddleware(['admin']),
-
 
 router.get('/', async (req, res) => {
     try {
