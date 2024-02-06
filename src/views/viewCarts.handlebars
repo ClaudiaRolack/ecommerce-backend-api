@@ -12,11 +12,11 @@
             <div class="cart-container">
                 <h2>Carrito de Compras</h2>
                 <div class="cart-items">
-                    {{#each carts}}
+                    {{#each products}}
                     <div class="cart-item">
                         <div class="cart-item-info">
-                            <h3 class="cart-item-title">{{this.title}}</h3>
-                            <p class="cart-item-price">{{this.price}}</p>
+                            <h3 id="cart-item-title">{{this.title}}</h3>
+                            <p id="cart-item-price">{{this.price}}</p>
                             <p>Cantidad: {{this.quantity}}</p>
                         </div>
                         <button class="remove-item">Eliminar</button>

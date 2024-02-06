@@ -4,6 +4,7 @@ const { passportCall } = require('../auth/passport.config.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
 const { generateOrderCode } = require('../helpers/generateCode.js');
 const { generateAddCartErrorInfo } = require('../services/errors/info.js');
+const { productsModel } = require('../dao/mongo/models/products.model.js');
 
 const router = Router();
 
@@ -41,7 +42,6 @@ router.post('/:cartId/products/:productId', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-
 
 router.post('/:cid/purchase', async (req, res) => {
     const { cid } = req.params;
@@ -96,6 +96,26 @@ router.post('/:cid/purchase', async (req, res) => {
     } catch (error) {
         console.error('Error al procesar la compra:', error);
         res.status(500).send({ success: false, error: 'Error al procesar la compra' });
+    }
+});
+
+router.get('/info/:cartId', async (req, res) => {
+    try {
+        const cartId = req.params.cartId;
+        const cart = await cartsService.getById(cartId);
+        
+        if (!cart) {
+            return res.status(404).json({ error: 'El carrito no fue encontrado' });
+        }
+
+        const productIds = cart.products.map(product => product.productId);
+
+        const requestedProducts = await productsModel.find({ _id: { $in: productIds } });
+
+        res.json(requestedProducts);
+    } catch (error) {
+        console.error('Error al obtener información de productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
