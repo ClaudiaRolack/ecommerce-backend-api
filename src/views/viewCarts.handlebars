@@ -1,45 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito</title>
 </head>
+
 <body>
-    
-    <h1>Bienvenido/a {{firstName}}</h1>
-    <h3>{{rol}}</h3>
-    <h4>{{email}}</h4>
-    <h5>{{_id}}</h5>
 
-    <h1>Carrito</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>Comprar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each products}}
-            <tr>
-                <td>{{title}}</td>
-                <td>{{price}}</td>
-                <td>{{quantity}}</td>
-                <td>{{amount}}</td>
-                <td>
-                    <button class="buy-cart" data-product-id={{_id}} data-cart-id="{{cartId}}">Comprar</button>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
+            <div class="cart-container">
+                <h2>Carrito de Compras</h2>
+                <div class="cart-items">
+                    {{#each carts}}
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <h3 class="cart-item-title">{{this.title}}</h3>
+                            <p class="cart-item-price">{{this.price}}</p>
+                            <p>Cantidad: {{this.quantity}}</p>
+                        </div>
+                        <button class="remove-item">Eliminar</button>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
 
-    </table>
+            <div class="cart-summary">
+                <h3>Resumen del Carrito</h3>
+                <p>{{amount}}</p>
+                <button class="checkout-button">Pagar</button>
+            </div>
+
+        </div>
+    </div>
 
     <script src="/js/viewCarts.js"></script>
 
 </body>
+
 </html>

@@ -23,8 +23,11 @@ router.post('/:cartId/products/:productId', async (req, res) => {
         let productId = req.params.productId;
         let cartId = req.params.cartId;
         let newQuantity = req.body.quantity;
+        console.log('prodID:', productId)
+        console.log('cartId', cartId)
+        console.log('newQuantity:', newQuantity)
 
-        let existingCartItem = await cartsService.findCartItem(cartId, productId);
+        let existingCartItem = await cartsService.findCartItem(cartId, productId, newQuantity);
 
         if (existingCartItem) {
             let updatedCartItem = await cartsService.updateProductInCart(productId, cartId, newQuantity);
@@ -99,7 +102,7 @@ router.post('/:cid/purchase', async (req, res) => {
 router.get('/view/:cartId', async (req, res) => {
     try {
         const id = req.params.cartId;
-        let cartsData = await cartsService.get(id)
+        let cartsData = await cartsService.getById(id)
         res.render('viewCarts', { cartsData })
     } catch (error) {
         console.error('Error al traer el carrito por ID:', error);

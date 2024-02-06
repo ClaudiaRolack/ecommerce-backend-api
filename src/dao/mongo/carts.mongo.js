@@ -15,18 +15,32 @@ class CartsMongo {
 
     addCart = async (cartId, productId, quantity) => {
         try {
-            const newCartItem = new cartsModel({
-                cart: cartId,
-                product: productId,
-                quantity: quantity
-            });
-            await newCartItem.save();
-            return newCartItem;
+            const carts = await this.getById(cartId);
+    
+            if (!carts) return;
+
+            const parsedQuantity = parseInt(quantity);
+            
+            if (!isNaN(parsedQuantity)) {
+                const existingProductIndex = carts.products.findIndex(product => product.productId === productId);
+                
+                if (existingProductIndex !== -1) {
+                    carts.products[existingProductIndex].quantity += parsedQuantity;
+                } else {
+                    carts.products.push({ productId, quantity: parsedQuantity });
+                }
+
+                await carts.save();
+                return carts;
+            } else {
+                throw new Error('La cantidad no es un número entero válido');
+            }
         } catch (error) {
             console.error('Error al agregar el producto al carrito:', error);
             throw new Error('Error al agregar el producto al carrito');
         }
     }
+    
 
     get = async () => {
         try {
@@ -50,8 +64,7 @@ class CartsMongo {
 
     getById = async (id) => {
         try {
-            let cid = id;
-            let cartsById = await cartsModel.findById(cid);
+            let cartsById = await cartsModel.findById(id);
             if (!cartsById) {
                 return 'El ID no existe';
             } else {
