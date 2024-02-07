@@ -1,4 +1,5 @@
 const { cartsModel } = require('./models/carts.model.js');
+const { productsModel } = require('./models/products.model.js');
 
 class CartsMongo {
 
@@ -90,19 +91,43 @@ class CartsMongo {
         }
     }
 
-    deleteProduct = async (prodId, cartId) => {
+    // deleteProduct = async (productId, cartId) => {
+    //     try {
+    //         const carts = await cartsModel.findById(cartId);
+    //         const product = await productsModel.findById(productId)
+    //         if (!carts) { return 'Carrito no encontrado' };
+    //         const updateCart = carts.products.filter(product => product._id != product);
+    //         console.log('MongoProdId:', product)
+    //         carts.products = updateCart;
+    //         await carts.save();
+    //         return 'Producto eliminado exitosamente';
+    //     } catch (error) {
+    //         console.log(error)
+    //         return null
+    //     }
+    // }
+
+    deleteProduct = async (productId, cartId) => {
         try {
-            const carts = await cartsModel.findById(cartId);
-            if (!carts) { return 'Carrito no encontrado' };
-            const updateCart = carts.products.filter(product => product._id != prodId);
-            carts.products = updateCart;
-            await carts.save();
+            const cart = await cartsModel.findById(cartId);
+            if (!cart) {
+                return 'Carrito no encontrado';
+            }
+    
+            // Filtrar los productos para eliminar el producto con el id proporcionado
+            cart.products = cart.products.filter(product => String(product._id) !== productId);
+            console.log('mongo:', productId)
+    
+            // Guardar el carrito actualizado en la base de datos
+            await cart.save();
+    
             return 'Producto eliminado exitosamente';
         } catch (error) {
-            console.log(error)
-            return null
+            console.error('Error al eliminar el producto:', error);
+            return null;
         }
     }
+    
 
     deleteAllProducts = async (cartId) => {
         try {

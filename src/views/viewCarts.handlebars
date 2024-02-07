@@ -11,24 +11,36 @@
 
             <div class="cart-container">
                 <h2>Carrito de Compras</h2>
-                <div class="cart-items">
-                    {{#each products}}
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <h3 id="cart-item-title">{{this.title}}</h3>
-                            <p id="cart-item-price">{{this.price}}</p>
-                            <p>Cantidad: {{this.quantity}}</p>
-                        </div>
-                        <button class="remove-item">Eliminar</button>
-                    </div>
-                    {{/each}}
-                </div>
+                <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Remover</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <td>{{title}}</td>
+                <td>{{price}}</td>
+                <td>{{quantity}}</td>
+                <td>
+                    <button class="remove-item" data-cart-id="{{cartdId}}" data-product-id="{{productId}}">Eliminar</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+
+    </table>
             </div>
 
             <div class="cart-summary">
                 <h3>Resumen del Carrito</h3>
-                <p>{{amount}}</p>
-                <button class="checkout-button">Pagar</button>
+                <p id="final-amount">{{amount}}</p>
+
+                <button id="checkout-button" href="#">Comprar</button>
             </div>
 
         </div>

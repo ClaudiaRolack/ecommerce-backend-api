@@ -170,11 +170,16 @@ router.put('/:cid/products/:pid', async (req, res) => {
     }
 });
 
-router.delete('/:cid/products/:pid', async (req, res) => {
+router.delete('/:cid/products/:productId', async (req, res) => {
     try {
-        let prodId = req.params.pid;
         let cartId = req.params.cid;
-        res.send(await cartsService.deleteProduct(prodId, cartId));
+        let productId = req.params.productId;
+        
+        console.log('productId:', productId)
+        console.log('cartID:', cartId)
+
+        res.send(await cartsService.deleteProduct(productId, cartId));
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });

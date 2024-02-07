@@ -1,112 +1,14 @@
 //Vista carrito
 
-// document.addEventListener('DOMContentLoaded', function () {
-
-//     const url = window.location.href;
-//     const parts = url.split('/');
-//     const cartId = parts[parts.length - 1]
-
-//     fetch(`/api/carts/info/${cartId}`, {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//     })
-//         .then(response => {
-//             if(!response.ok) {
-//                 throw new Error('No se pueden traer los datos');
-//             } 
-//             return response.json();
-//         })
-//         .then(data => {
-//             document.getElementById('cart-item-title').textContent = data.title;
-//             document.getElementById('cart-item-price').textContent = data.price;
-//         })
-//         .catch(error => console.log(error));
-// });
-
-// document.addEventListener('DOMContentLoaded', function () {
-
-//     const url = window.location.href;
-//     const parts = url.split('/');
-//     const cartId = parts[parts.length - 1]
-
-//     fetch(`/api/carts/${cartId}`, {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//     })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error('No se puede ver el carrito');
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             const cartItemsContainer = document.querySelector('.cart-items');
-
-//             data.products.forEach(product => {
-//                 const cartItem = document.createElement('div');
-//                 cartItem.classList.add('cart-item');
-
-//                 const cartItemInfo = document.createElement('div');
-//                 cartItemInfo.classList.add('cart-item-info');
-
-//                 const title = document.createElement('h3');
-//                 title.classList.add('cart-item-title');
-//                 title.textContent = product.title;
-
-//                 const price = document.createElement('p');
-//                 price.classList.add('cart-item-price');
-//                 price.textContent = product.price;
-
-//                 const quantity = document.createElement('p');
-//                 quantity.textContent = `Cantidad: ${product.quantity}`;
-
-//                 const removeButton = document.createElement('button');
-//                 removeButton.classList.add('remove-item');
-//                 removeButton.textContent = 'Eliminar';
-
-//                 cartItemInfo.appendChild(title);
-//                 cartItemInfo.appendChild(price);
-//                 cartItemInfo.appendChild(quantity);
-
-//                 cartItem.appendChild(cartItemInfo);
-//                 cartItem.appendChild(removeButton);
-
-//                 cartItemsContainer.appendChild(cartItem);
-//             });
-//         })
-//         .catch(error => {
-//             console.error('Error al obtener el carrito:', error);
-//         });
-
-//     const removeButtons = document.querySelectorAll('.remove-item');
-//     removeButtons.forEach(button => {
-//         button.addEventListener('click', function () {
-//             const item = this.closest('.cart-item');
-//             item.remove();
-//             // Aquí podrías realizar otras acciones, como actualizar el total del carrito
-//         });
-//     });
-
-//     // Manejar el clic en el botón de pago
-//     const checkoutButton = document.querySelector('.checkout-button');
-//     checkoutButton.addEventListener('click', function () {
-//         alert('Gracias por su compra');
-//         // Aquí podrías redirigir al usuario a la página de pago o realizar otras acciones relacionadas con el pago
-//     });
-// });
-
-
-
-
+let cartProducts;
 
 document.addEventListener('DOMContentLoaded', function () {
     const url = window.location.href;
     const parts = url.split('/');
     const cartId = parts[parts.length - 1];
+
+    // const cartLink = document.getElementById('checkout-button');
+    // cartLink.href = `/api/orders/view/${cartId}`;  
 
     fetch(`/api/carts/${cartId}`, {
         method: 'GET',
@@ -114,63 +16,103 @@ document.addEventListener('DOMContentLoaded', function () {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('No se puede obtener la información del carrito');
-        }
-        return response.json();
-    })
-    .then(cartData => {
-
-        const cartItemsContainer = document.querySelector('.cart-items');
-        cartData.forEach(cart => {
-            const cartItem = document.createElement('div');
-            cartItem.classList.add('cart-item');
-
-            const cartItemInfo = document.createElement('div');
-            cartItemInfo.classList.add('cart-item-info');
-
-            const quantity = document.createElement('p');
-            quantity.textContent = `Cantidad: ${cart.quantity}`;
-
-            const removeButton = document.createElement('button');
-            removeButton.classList.add('remove-item');
-            removeButton.textContent = 'Eliminar';
-
-            cartItemInfo.appendChild(title);
-            cartItemInfo.appendChild(price);
-            cartItemInfo.appendChild(quantity);
-
-            cartItem.appendChild(cartItemInfo);
-            cartItem.appendChild(removeButton);
-
-            cartItemsContainer.appendChild(cartItem);
-        });
-
-        fetch(`/api/carts/info/${cartId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
         .then(response => {
             if (!response.ok) {
-                throw new Error('No se pueden obtener los detalles de los productos');
+                throw new Error('No se puede obtener la información del carrito');
             }
+
             return response.json();
         })
-        .then(productData => {
+        .then(cartData => {
+            const cartItemsContainer = document.querySelector('.cart-items');
+            cartProducts = cartData.products;
+            cartData.products.forEach(cart => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
 
-            document.getElementById('cart-item-title').textContent = productData.title;
-            document.getElementById('cart-item-price').textContent = productData.price;
-           
+                const cartItemInfo = document.createElement('div');
+                cartItemInfo.classList.add('cart-item-info');
+
+                const quantity = document.createElement('p');
+                quantity.textContent = `Cantidad: ${cart.quantity}`;
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-item');
+                removeButton.textContent = 'Eliminar';
+            });
+
+            fetch(`/api/carts/info/${cartId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pueden obtener los detalles de los productos');
+                    }
+                    return response.json();
+                })
+                .then(productData => {
+
+                    productData.forEach(product => {
+                        cartProducts.forEach(data => {
+                            if (product._id === data.productId) {
+                                product.quantity = data.quantity
+                            }
+                        })
+                    });
+
+                    const productsTableBody = document.querySelector('tbody');
+                    productData.forEach(product => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td>${product.title}</td>
+                    <td>${product.price * product.quantity}</td>
+                    <td>${product.quantity}</td>
+                    <td><button data-cart-id="${cartId}" data-prudct-id="${product._id}" class="remove-item">Eliminar</button></td>
+                `
+                        const removeButtons = document.querySelectorAll('.remove-item');
+                        removeButtons.forEach(button => {
+                            button.addEventListener('click', function () {
+                                const cartId = this.getAttribute('data-cart-id');
+                                const productId = this.getAttribute('data-product-id');
+
+                                fetch(`/api/carts/${cartId}/products/${productId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('No se puede eliminar el producto del carrito');
+                                        }
+                                        location.reload();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error al eliminar el producto del carrito:', error);
+                                    });
+                            });
+                        });
+
+                        productsTableBody.appendChild(row);
+                    })
+
+                    const arrayOfAmountByProduct = productData.map(product => product.price * product.quantity)
+                    const finalAmount = arrayOfAmountByProduct.reduce((accum, currenteValue) => accum + currenteValue, 0);
+
+                    const finalAmountElement = document.getElementById('final-amount')
+                    finalAmount.innerHTML = finalAmount.toString()
+
+                    finalAmountElement.append(finalAmount)
+
+                })
+                .catch(error => {
+                    console.error('Error al obtener los detalles de los productos:', error);
+                });
         })
         .catch(error => {
-            console.error('Error al obtener los detalles de los productos:', error);
+            console.error('Error al obtener la información del carrito:', error);
         });
-    })
-    .catch(error => {
-        console.error('Error al obtener la información del carrito:', error);
-    });
 });
-

@@ -34,8 +34,8 @@ class CartsRepository {
         return updatedQuantity;
     }
 
-    deleteProduct = async (prodId, cartId) => {
-        let deleteProduct = await this.dao.deleteProduct(prodId, cartId);
+    deleteProduct = async (productId, cartId) => {
+        let deleteProduct = await this.dao.deleteProduct(productId, cartId);
         return deleteProduct;
     }
 
