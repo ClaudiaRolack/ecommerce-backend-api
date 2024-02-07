@@ -121,7 +121,6 @@ class UsersMongo {
     validateUser = async (email) => {
         try {
             const user = await usersModel.findOne({ email });
-            console.log(user)
             if (!user) { return 'Usuario no encontrado' };
             return user;
         } catch (error) {

@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${product.title}</td>
                     <td>${product.price * product.quantity}</td>
                     <td>${product.quantity}</td>
-                    <td><button data-cart-id="${cartId}" data-prudct-id="${product._id}" class="remove-item">Eliminar</button></td>
+                    <td><button data-cart-id="${cartId}" data-product-id="${product._id}" class="remove-item">Eliminar</button></td>
                 `
                         const removeButtons = document.querySelectorAll('.remove-item');
                         removeButtons.forEach(button => {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         if (!response.ok) {
                                             throw new Error('No se puede eliminar el producto del carrito');
                                         }
-                                        location.reload();
+                                        // location.reload();
                                     })
                                     .catch(error => {
                                         console.error('Error al eliminar el producto del carrito:', error);
@@ -106,6 +106,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     finalAmount.innerHTML = finalAmount.toString()
 
                     finalAmountElement.append(finalAmount)
+
+                    //Botón comprar
+                    const buyButton = document.createElement('button');
+                    buyButton.textContent = 'Comprar';
+                    buyButton.classList.add('buy-button');
+
+                    buyButton.addEventListener('click', function () {
+                        window.location.href = `/api/orders/view/${cartId}`;
+                    });
+
+                    const buyContainer = document.getElementById('buy-container');
+                    // buyContainer.appendChild(buyButton);
 
                 })
                 .catch(error => {

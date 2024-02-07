@@ -91,43 +91,56 @@ class CartsMongo {
         }
     }
 
-    // deleteProduct = async (productId, cartId) => {
-    //     try {
-    //         const carts = await cartsModel.findById(cartId);
-    //         const product = await productsModel.findById(productId)
-    //         if (!carts) { return 'Carrito no encontrado' };
-    //         const updateCart = carts.products.filter(product => product._id != product);
-    //         console.log('MongoProdId:', product)
-    //         carts.products = updateCart;
-    //         await carts.save();
-    //         return 'Producto eliminado exitosamente';
-    //     } catch (error) {
-    //         console.log(error)
-    //         return null
-    //     }
-    // }
-
     deleteProduct = async (productId, cartId) => {
         try {
             const cart = await cartsModel.findById(cartId);
-            if (!cart) {
-                return 'Carrito no encontrado';
-            }
-    
-            // Filtrar los productos para eliminar el producto con el id proporcionado
-            cart.products = cart.products.filter(product => String(product._id) !== productId);
-            console.log('mongo:', productId)
-    
-            // Guardar el carrito actualizado en la base de datos
+            console.log('mongo:', cart)
+            if (!cart) { return 'Carrito no encontrado' };
+            const updateCart = cart.products.filter(product => product._id != productId);
+            cart.products = updateCart;
             await cart.save();
-    
             return 'Producto eliminado exitosamente';
         } catch (error) {
-            console.error('Error al eliminar el producto:', error);
-            return null;
+            console.log(error)
+            return null
         }
     }
+
+    // deleteProduct = async (productId, cartId) => {
+    //     try {
+    //         const cart = await cartsModel.findById(cartId);
+    //         console.log('mongo:', cart)
+
+    //         if (!cart) {
+    //             return 'Carrito no encontrado';
+    //         }
     
+    //         // Buscar el producto en el carrito
+    //         const productIndex = cart.products.findIndex(product => product._id === productId);
+    
+    //         if (productIndex === -1) {
+    //             return 'Producto no encontrado en el carrito';
+    //         }
+    
+    //         const product = cart.products[productIndex];
+           
+    
+    //         // Verificar si la cantidad es mayor que uno
+    //         if (product.quantity > 1) {
+    //             // Si la cantidad es mayor que uno, simplemente disminuir en uno la cantidad
+    //             cart.products[productIndex].quantity -= 1;
+    //         } else {
+    //             // Si la cantidad es uno, eliminar el producto del carrito
+    //             cart.products.splice(productIndex, 1);
+    //         }
+    
+    //         await cart.save();
+    //         return 'Producto eliminado exitosamente';
+    //     } catch (error) {
+    //         console.error('Error al eliminar el producto:', error);
+    //         return null;
+    //     }
+    // }
 
     deleteAllProducts = async (cartId) => {
         try {
@@ -141,7 +154,6 @@ class CartsMongo {
             return null
         }
     }
-
 }
 
 module.exports = { CartsMongo }
