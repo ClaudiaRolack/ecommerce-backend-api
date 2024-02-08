@@ -64,10 +64,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${product.title}</td>
                     <td>${product.price * product.quantity}</td>
                     <td>${product.quantity}</td>
-                `      
-                productsTableBody.appendChild(row);
-                        
-                        
+                    `
+                        productsTableBody.appendChild(row);
+
                     })
 
                     const arrayOfAmountByProduct = productData.map(product => product.price * product.quantity)
@@ -78,17 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     finalAmountElement.append(finalAmount)
 
-   // Crear un nuevo elemento para mostrar la fecha
-            const orderDateElement = document.createElement('p');
-                
-            // Obtener la fecha actual
-            const orderDate = new Date();
-            
-            // Configurar el contenido del elemento con la fecha
-            orderDateElement.textContent = 'Fecha orden: ' + orderDate.toString();
-                finalAmountElement.parentNode.insertBefore(orderDateElement, finalAmountElement.nextSibling);
-                  
+                    const orderDateElement = document.createElement('p');
+                    const orderDate = new Date();
 
+                    orderDateElement.textContent = 'Fecha orden: ' + orderDate.toString();
+                    finalAmountElement.parentNode.insertBefore(orderDateElement, finalAmountElement.nextSibling);
                 })
                 .catch(error => {
                     console.error('Error al obtener los detalles de los productos:', error);
