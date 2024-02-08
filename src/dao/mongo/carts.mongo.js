@@ -98,7 +98,8 @@ class CartsMongo {
             const updateCart = cart.products.filter(product => product.productId != productId);
             cart.products = updateCart;
             await cart.save();
-        } catch (Error) {
+            return 'Producto eliminado exitosamente';
+        } catch (error) {
             console.log(error)
             return null
         }

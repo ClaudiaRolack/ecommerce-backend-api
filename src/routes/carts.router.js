@@ -174,8 +174,8 @@ router.delete('/:cartId/products/:productId', async (req, res) => {
     try {
         let cartId = req.params.cartId;
         let productId = req.params.productId;
-        console.log('ruta:', cartId)
-        res.send(await cartsService.deleteProduct(productId, cartId));
+        await cartsService.deleteProduct(productId, cartId)
+        res.send('Eliminado');
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });

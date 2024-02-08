@@ -4,25 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ordenes</title>
 </head>
 
 <body>
 
-    <div class="container">
-        <h1>Resumen de tu compra</h1>
-        <div class="cart-items">
-            {{#each carts}}
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <h3 class="cart-item-title">{{title}}</h3>
-                    <p class="cart-item-price">${{price}}</p>
-                    <p>Cantidad: {{quantity}}</p>
-                </div>
-            </div>
+            <div class="cart-container">
+                <h2>Orden</h2>
+                <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <td>{{title}}</td>
+                <td>{{price}}</td>
+                <td>{{quantity}}</td>
+            </tr>
             {{/each}}
+        </tbody>
+
+    </table>
+            </div>
+
+            <div id="buy-container" class="cart-summary">
+                <h3>Total orden</h3>
+                <p id="final-amount">{{amount}}</p>
+            </div>
+
         </div>
-        <a href="/productos" class="checkout-link">Volver a los productos</a>
     </div>
 
     <script src="/js/viewPurchase.js"></script>

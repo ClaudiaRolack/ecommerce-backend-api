@@ -69,15 +69,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${product.price * product.quantity}</td>
                     <td>${product.quantity}</td>
                     <td><button id="${product._id}" data-cart-id="${cartId}" data-product-id="${product._id}" class="remove-item">Eliminar</button></td>
-                    `
-                        productsTableBody.appendChild(row);
-
-
+                `      
+                productsTableBody.appendChild(row);
+                        
+                        
                     })
 
                     const removeButtons = document.querySelectorAll('.remove-item');
                     removeButtons.forEach(button => {
-                        console.log(button)
+                        console.log(button) 
                         button.addEventListener('click', function () {
                             const cartId = this.getAttribute('data-cart-id');
                             const productId = this.getAttribute('data-product-id');
@@ -99,6 +99,33 @@ document.addEventListener('DOMContentLoaded', function () {
                                 });
                         });
                     });
+
+                    const arrayOfAmountByProduct = productData.map(product => product.price * product.quantity)
+                    const finalAmount = arrayOfAmountByProduct.reduce((accum, currenteValue) => accum + currenteValue, 0);
+
+                    const finalAmountElement = document.getElementById('final-amount')
+                    finalAmount.innerHTML = finalAmount.toString()
+
+                    finalAmountElement.append(finalAmount)
+
+                    //Botón comprar
+                    const buyButton = document.createElement('button');
+                    buyButton.textContent = 'Comprar';
+                    buyButton.classList.add('buy-button');
+
+                    buyButton.addEventListener('click', function () {
+                        window.location.href = `/api/orders/view/${cartId}`;
+                    });
+
+                    const buyContainer = document.getElementById('buy-container');
+                    buyContainer.appendChild(buyButton);
+
+                })
+                .catch(error => {
+                    console.error('Error al obtener los detalles de los productos:', error);
                 });
+        })
+        .catch(error => {
+            console.error('Error al obtener la información del carrito:', error);
         });
 });
