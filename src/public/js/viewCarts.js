@@ -62,66 +62,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const productsTableBody = document.querySelector('tbody');
                     productData.forEach(product => {
+                        console.log(product)
                         const row = document.createElement('tr');
                         row.innerHTML = `
                     <td>${product.title}</td>
                     <td>${product.price * product.quantity}</td>
                     <td>${product.quantity}</td>
-                    <td><button data-cart-id="${cartId}" data-product-id="${product._id}" class="remove-item">Eliminar</button></td>
-                `
-                        const removeButtons = document.querySelectorAll('.remove-item');
-                        removeButtons.forEach(button => {
-                            button.addEventListener('click', function () {
-                                const cartId = this.getAttribute('data-cart-id');
-                                const productId = this.getAttribute('data-product-id');
-
-                                fetch(`/api/carts/${cartId}/products/${productId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                })
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            throw new Error('No se puede eliminar el producto del carrito');
-                                        }
-                                        // location.reload();
-                                    })
-                                    .catch(error => {
-                                        console.error('Error al eliminar el producto del carrito:', error);
-                                    });
-                            });
-                        });
-
+                    <td><button id="${product._id}" data-cart-id="${cartId}" data-product-id="${product._id}" class="remove-item">Eliminar</button></td>
+                    `
                         productsTableBody.appendChild(row);
+
+
                     })
 
-                    const arrayOfAmountByProduct = productData.map(product => product.price * product.quantity)
-                    const finalAmount = arrayOfAmountByProduct.reduce((accum, currenteValue) => accum + currenteValue, 0);
+                    const removeButtons = document.querySelectorAll('.remove-item');
+                    removeButtons.forEach(button => {
+                        console.log(button)
+                        button.addEventListener('click', function () {
+                            const cartId = this.getAttribute('data-cart-id');
+                            const productId = this.getAttribute('data-product-id');
+                            fetch(`/api/carts/${cartId}/products/${productId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => {
 
-                    const finalAmountElement = document.getElementById('final-amount')
-                    finalAmount.innerHTML = finalAmount.toString()
-
-                    finalAmountElement.append(finalAmount)
-
-                    //Botón comprar
-                    const buyButton = document.createElement('button');
-                    buyButton.textContent = 'Comprar';
-                    buyButton.classList.add('buy-button');
-
-                    buyButton.addEventListener('click', function () {
-                        window.location.href = `/api/orders/view/${cartId}`;
+                                    if (!response.ok) {
+                                        throw new Error('No se puede eliminar el producto del carrito');
+                                    }
+                                    location.reload();
+                                })
+                                .catch(error => {
+                                    console.error('Error al eliminar el producto del carrito:', error);
+                                });
+                        });
                     });
-
-                    const buyContainer = document.getElementById('buy-container');
-                    buyContainer.appendChild(buyButton);
-
-                })
-                .catch(error => {
-                    console.error('Error al obtener los detalles de los productos:', error);
                 });
-        })
-        .catch(error => {
-            console.error('Error al obtener la información del carrito:', error);
         });
 });
