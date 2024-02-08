@@ -10,34 +10,22 @@
 <body>
 
     <div class="container">
-        <h1>Carrito Pagado</h1>
+        <h1>Resumen de tu compra</h1>
         <div class="cart-items">
+            {{#each carts}}
             <div class="cart-item">
                 <div class="cart-item-info">
-                    <h3 class="cart-item-title">Producto 1</h3>
-                    <p class="cart-item-price">$20.00</p>
-                    <p>Cantidad: 2</p>
+                    <h3 class="cart-item-title">{{title}}</h3>
+                    <p class="cart-item-price">${{price}}</p>
+                    <p>Cantidad: {{quantity}}</p>
                 </div>
             </div>
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <h3 class="cart-item-title">Producto 2</h3>
-                    <p class="cart-item-price">$15.00</p>
-                    <p>Cantidad: 1</p>
-                </div>
-            </div>
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <h3 class="cart-item-title">Producto 3</h3>
-                    <p class="cart-item-price">$30.00</p>
-                    <p>Cantidad: 3</p>
-                </div>
-            </div>
+            {{/each}}
         </div>
         <a href="/productos" class="checkout-link">Volver a los productos</a>
     </div>
 
-    <script src="/js/viewBuy.js"></script>
+    <script src="/js/viewPurchase.js"></script>
 
 </body>
 

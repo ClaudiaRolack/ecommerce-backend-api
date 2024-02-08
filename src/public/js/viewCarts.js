@@ -7,9 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const parts = url.split('/');
     const cartId = parts[parts.length - 1];
 
-    // const cartLink = document.getElementById('checkout-button');
-    // cartLink.href = `/api/orders/view/${cartId}`;  
-
     fetch(`/api/carts/${cartId}`, {
         method: 'GET',
         headers: {
@@ -117,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     const buyContainer = document.getElementById('buy-container');
-                    // buyContainer.appendChild(buyButton);
+                    buyContainer.appendChild(buyButton);
 
                 })
                 .catch(error => {
