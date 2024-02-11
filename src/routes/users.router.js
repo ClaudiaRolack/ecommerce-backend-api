@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const { Router } = require("express");
 const { usersService } = require('../repositories/index.js');
-const { SECRET_KEY, NODEMAILER_EMAIL } = require('../config/dotenv.js');
 const { passportCall } = require('../auth/passport.config.js');
 const { UserProfileDTO } = require('../dao/DTOs/userProfile.dto.js');
 const { authorizationMiddleware } = require('../auth/authMiddleware.js');
@@ -79,7 +78,7 @@ router.post('/login', passport.authenticate('login', { session: false }), async 
         const rol = data.rol;
         const cartId = data.cart;
 
-        const token = jwt.sign({ email, firstName, lastName, rol, cartId }, SECRET_KEY, { expiresIn: "24h" });
+        const token = jwt.sign({ email, firstName, lastName, rol, cartId }, process.env.SECRET_KEY, { expiresIn: "24h" });
         res.cookie("token", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 
         if (data && (await bcrypt.compare(req.body.password, data.password))) {
@@ -119,13 +118,13 @@ router.post('/forgot-password', async (req, res) => {
                 return res.status(404).json({ message: "Usuario no encontrado" });
             }
 
-            const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: "1h" });
+            const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "1h" });
             res.cookie("token", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 
             const resetPassword = `http://localhost:8080/reset-password/${token}`;
 
             const mailOptions = {
-                from: NODEMAILER_EMAIL,
+                from: process.env.NODEMAILER_EMAIL,
                 to: user.email,
                 subject: 'Restablecimiento de Contraseña',
                 text: `Para restablecer tu contraseña, haz clic en el siguiente enlace: ${resetPassword}`,

@@ -1,11 +1,10 @@
-const config = require('../config/dotenv.js');
 const { connectToDatabase } = require('../config/database.js');
 
 let Products 
 let Carts
 let Users
 let Orders
-switch (config.persistence) {
+switch (process.env.PERSISTENCE) {
     case "MONGO":
         connectToDatabase();
         const { ProductsMongo } = require('./mongo/products.mongo.js');

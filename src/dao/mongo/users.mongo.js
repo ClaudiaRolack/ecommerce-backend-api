@@ -5,7 +5,6 @@ const { usersModel } = require('./models/users.model.js');
 const { createHash } = require('../../helpers/Encrypt.js');
 const { SECRET_KEY } = require('../../config/dotenv.js');
 const { transporter } = require('../../helpers/nodemailer.js');
-const { NODEMAILER_EMAIL } = require('../../config/dotenv.js');
 const { cartsModel } = require('./models/carts.model.js');
 
 
@@ -141,7 +140,7 @@ class UsersMongo {
     sendDeletionEmail = async (email) => {
         try {
             const mailOptions = {
-                from: NODEMAILER_EMAIL,
+                from: process.env.NODEMAILER_EMAIL,
                 to: email,
                 subject: 'Eliminación de cuenta por inactividad',
                 text: 'Tu cuenta ha sido eliminada debido a inactividad durante los últimos 30 minutos.',

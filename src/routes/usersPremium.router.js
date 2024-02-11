@@ -1,13 +1,8 @@
 const { Router } = require('express');
 const { usersService } = require('../repositories/index.js');
-const { authorizationMiddleware } = require('../auth/authMiddleware.js');
-const { passportCall } = require('../auth/passport.config.js');
 const upload = require('../middlewares/multerMiddleware.js');
 
 const router = Router();
-
-
-// passportCall('jwt'), authorizationMiddleware(['admin']),
 
 router.get('/', async (req, res) => {
     try {

@@ -24,6 +24,6 @@ const prodLogger = createLogger({
     ]
 });
 
-const logger = (process.env.LOGGERENV === 'production' ? prodLogger : devLogger);
+const logger = (process.env.ENV === 'production' ? prodLogger : devLogger);
 
 module.exports = logger

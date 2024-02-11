@@ -4,7 +4,6 @@ const jwt = require('passport-jwt');
 
 const { usersService} = require('../repositories/index.js');
 const { createHash, isValidPassword } = require('../helpers/Encrypt.js');
-const { SECRET_KEY } = require('../config/dotenv.js');
 const { generateUserErrorInfo } = require('../services/errors/info.js');
 const { CustomError } = require('../services/errors/customError.js');
 const { EErrors } = require('../services/errors/enums.js');
@@ -88,7 +87,7 @@ const initializePassport = () => {
 
     const jwtOptions = {
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: SECRET_KEY
+        secretOrKey: process.env.SECRET_KEY
     }
 
     new JwtStrategy(jwtOptions, (jwt_payload, done) => {
@@ -107,7 +106,7 @@ const initializePassport = () => {
     
     passport.use("jwt", new JwtStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: SECRET_KEY,
+        secretOrKey: process.env.SECRET_KEY,
     }, async(jwt_payload, done) => {
         try {
             return done(null, jwt_payload);

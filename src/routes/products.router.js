@@ -8,8 +8,6 @@ const { CustomError } = require('../services/errors/customError.js');
 const { generateProductErrorInfo } = require('../services/errors/info.js');
 const { EErrors } = require('../services/errors/enums.js');
 const { transporter } = require('../helpers/nodemailer.js');
-const { NODEMAILER_EMAIL } = require('../config/dotenv.js');
-
 
 const router = Router();
 
@@ -102,7 +100,7 @@ router.delete('/:productId', passportCall('jwt'), authorizationMiddleware(['admi
             const result = await productsService.delete(pid);
 
             const mailOptions = {
-                from: NODEMAILER_EMAIL,
+                from: process.env.NODEMAILER_EMAIL,
                 to: user.email,
                 subject: 'Producto eliminado',
                 text: `Hola ${user.firstName},\n\nTu producto ${product.title} ha sido eliminado.`

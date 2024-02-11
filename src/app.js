@@ -19,7 +19,6 @@ const loggerMiddleware = require('./middlewares/loggerMiddleware.js');
 const logger = require('./utils/logger.js');
 const specs = require('./config/swagger.js');
 
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 
