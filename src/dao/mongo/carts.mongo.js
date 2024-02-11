@@ -1,5 +1,4 @@
 const { cartsModel } = require('./models/carts.model.js');
-const { productsModel } = require('./models/products.model.js');
 
 class CartsMongo {
 

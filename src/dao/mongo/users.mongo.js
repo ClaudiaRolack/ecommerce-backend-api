@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 
 const { usersModel } = require('./models/users.model.js');
 const { createHash } = require('../../helpers/Encrypt.js');
-const { SECRET_KEY } = require('../../config/dotenv.js');
 const { transporter } = require('../../helpers/nodemailer.js');
 const { cartsModel } = require('./models/carts.model.js');
 
@@ -83,7 +82,7 @@ class UsersMongo {
 
     updatePassword = async (token, newPassword) => {
         try {
-            const decodedToken = jwt.verify(token, SECRET_KEY);
+            const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
             const emailToken = decodedToken.email;
 
             const user = await usersModel.findOne({ email: emailToken });
