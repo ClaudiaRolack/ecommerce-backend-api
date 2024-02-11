@@ -4,7 +4,7 @@ let Products
 let Carts
 let Users
 let Orders
-switch (process.env.PERSISTENCE) {
+switch ("MONGO") {
     case "MONGO":
         connectToDatabase();
         const { ProductsMongo } = require('./mongo/products.mongo.js');

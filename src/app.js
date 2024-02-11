@@ -18,9 +18,11 @@ const { errorHandler } = require('./middlewares/errors/index.js');
 const loggerMiddleware = require('./middlewares/loggerMiddleware.js');
 const logger = require('./utils/logger.js');
 const specs = require('./config/swagger.js');
+const dotenv = require('dotenv');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+dotenv.config();
 
 
 app.engine("handlebars", handlebars.engine());
