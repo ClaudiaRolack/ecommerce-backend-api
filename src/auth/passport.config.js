@@ -2,6 +2,7 @@ const passport = require('passport');
 const local = require('passport-local');
 const jwt = require('passport-jwt');
 
+// dependencies
 const { usersService} = require('../repositories/index.js');
 const { createHash, isValidPassword } = require('../helpers/Encrypt.js');
 const { generateUserErrorInfo } = require('../services/errors/info.js');
