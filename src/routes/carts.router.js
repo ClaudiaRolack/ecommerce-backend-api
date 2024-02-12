@@ -24,9 +24,6 @@ router.post('/:cartId/products/:productId', async (req, res) => {
         let productId = req.params.productId;
         let cartId = req.params.cartId;
         let newQuantity = req.body.quantity;
-        console.log('prodID:', productId)
-        console.log('cartId', cartId)
-        console.log('newQuantity:', newQuantity)
 
         let existingCartItem = await cartsService.findCartItem(cartId, productId, newQuantity);
 
@@ -43,16 +40,18 @@ router.post('/:cartId/products/:productId', async (req, res) => {
     }
 });
 
-router.post('/:cid/purchase', async (req, res) => {
-    const { cid } = req.params;
-
+router.post('/:cartId/purchase', async (req, res) => {
+    
+    const cartId = req.params.cartId;
+    
     try {
-        const cart = await cartsService.getById(cid);
+        const cart = await cartsService.getById(cartId);
+        console.log(cart)
 
         const productsNotProcessed = [];
         const orderDetails = [];
         let orderTotalAmount = 0;
-
+        
         for (const product of cart.products) {
             const productData = await productsService.getById(product.productId);
 
@@ -79,7 +78,7 @@ router.post('/:cid/purchase', async (req, res) => {
             const orderCode = generateOrderCode();
 
             const order = await ordersService.createOrder({
-                cartId: cid,
+                cartId: cartId,
                 cart: cart,
                 details: orderDetails,
                 amount: orderTotalAmount,

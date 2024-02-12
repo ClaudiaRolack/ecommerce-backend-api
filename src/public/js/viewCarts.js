@@ -1,5 +1,4 @@
 //Vista carrito
-
 let cartProducts;
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -62,22 +61,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const productsTableBody = document.querySelector('tbody');
                     productData.forEach(product => {
-                        console.log(product)
                         const row = document.createElement('tr');
                         row.innerHTML = `
                     <td>${product.title}</td>
                     <td>${product.price * product.quantity}</td>
                     <td>${product.quantity}</td>
                     <td><button id="${product._id}" data-cart-id="${cartId}" data-product-id="${product._id}" class="remove-item">Eliminar</button></td>
-                `      
-                productsTableBody.appendChild(row);
-                        
-                        
+                `
+                        productsTableBody.appendChild(row);
                     })
 
                     const removeButtons = document.querySelectorAll('.remove-item');
                     removeButtons.forEach(button => {
-                        console.log(button) 
+                        console.log(button)
                         button.addEventListener('click', function () {
                             const cartId = this.getAttribute('data-cart-id');
                             const productId = this.getAttribute('data-product-id');
@@ -114,7 +110,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     buyButton.classList.add('buy-button');
 
                     buyButton.addEventListener('click', function () {
-                        window.location.href = `/api/orders/view/${cartId}`;
+                        console.log(cartId)
+                        console.log(cartData)
+                        fetch(`/api/carts/${cartId}/purchase`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                cart:cartData
+                            }),
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json()
+                                } else {
+                                    console.error('Su orden no se pudo llevar a cabo');
+                                }
+                            })
+                            .then(data => {
+                                console.log('Orden exitosa', data);
+                                // window.location.href = `/api/orders/view/${cartId}`;
+                            })
+                            .catch(error => {
+                                console.error('Error al hacer su orden', error);
+                            });
                     });
 
                     const buyContainer = document.getElementById('buy-container');
