@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                cart:cartData
+                                cart: cartData
                             }),
                         })
                             .then(response => {
@@ -130,7 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             })
                             .then(data => {
                                 console.log('Orden exitosa', data);
-                                // window.location.href = `/api/orders/view/${cartId}`;
+                                setTimeout(() => {
+                                    window.location.href = `/api/orders/view/${cartId}`;
+                                }, 3000);
                             })
                             .catch(error => {
                                 console.error('Error al hacer su orden', error);
